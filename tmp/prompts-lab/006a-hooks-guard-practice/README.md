@@ -9,6 +9,51 @@ and does not create `.codex/config.toml`, `.codex/hooks/`, or global config.
 - `hooks/mock_guard.py`: learning-only guard script
 - `run_smoke_tests.py`: runner that feeds each fixture to the guard
 
+## What To Read First
+
+Read this practice in this order:
+
+1. `fixtures/*.json`: each file is one fake Codex hook event.
+2. `hooks/mock_guard.py`: this is the policy logic that inspects the event.
+3. `run_smoke_tests.py`: this shows how each event is fed into the guard and
+   how the output is classified.
+
+The important point is that hook code is ordinary deterministic code. Codex
+sends event-shaped JSON, the script checks a few fields, and the script prints
+JSON that tells Codex whether to block, add context, continue, or pass.
+
+## Code Map
+
+`hooks/mock_guard.py` has three policy branches:
+
+- `pre_tool_use(event)`: looks at `tool_name` and `tool_input`; blocks edits or
+  commands that mention protected Unity paths.
+- `stop(event)`: looks at `last_assistant_message`; asks Codex to continue when
+  it claims completion without mentioning verification.
+- `user_prompt_submit(event)`: looks at `prompt`; adds Prompts Lab scope context
+  when the user prompt tries to move into Unity implementation.
+
+`run_smoke_tests.py` does not test Codex itself. It tests only this policy
+logic:
+
+1. Load each fixture JSON.
+2. Run `mock_guard.py` with the fixture as stdin.
+3. Read stdout/stderr.
+4. Classify the result as `blocked`, `continued`, `context`, `warning`, or
+   `passed`.
+5. Compare that classification with the fixture's `_lab.expected` value.
+
+## What This Solves
+
+This mock practice answers policy questions before touching real Codex config:
+
+- Which situations are concrete enough for a hook?
+- Should a situation be blocked, continued, or only given context?
+- Can the guard script distinguish dangerous and acceptable examples?
+
+It does not prove that Codex will call the hook. That is why the separate
+`../006a-real-codex-hook-smoke/` experiment exists.
+
 ## Selected hook candidates
 
 | Situation | Risk | Event | Decision | Why |

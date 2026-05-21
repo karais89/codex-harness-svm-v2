@@ -109,6 +109,48 @@ Codex는 사용자의 이해를 바탕으로 hook을 "특정 상황에서 Codex 
 - 실제 Codex hook smoke 결과 `subject/.codex/hook-log.jsonl`에 `UserPromptSubmit`, `PreToolUse` with `tool_name: "Bash"`, `Stop` with `stop_hook_active: false/true`가 기록됐다.
 - `PreToolUse`는 `echo CODEX_HOOK_BLOCK_ME` Bash command를 실제로 deny했고, `Stop`은 한 번 continuation을 만든 뒤 다음 Stop에서는 통과했다.
 
+## 코드와 실제 흐름 이해 가이드
+
+### mock 실습 코드가 해결한 것
+
+`tmp/prompts-lab/006a-hooks-guard-practice/`는 Codex와 연결되지 않은 순수 로직 실습이다.
+
+- `fixtures/*.json`: Codex가 hook script에 보낼 법한 입력 JSON을 손으로 만든 예시다.
+- `hooks/mock_guard.py`: 입력 JSON을 검사해 block, continue, context, pass 중 하나로 반응한다.
+- `run_smoke_tests.py`: 각 fixture를 `mock_guard.py` stdin으로 넣고 결과가 기대값과 맞는지 확인한다.
+
+이 단계가 해결한 질문은 "이 상황을 hook으로 잡는 게 맞나?", "block과 context 중 무엇이 맞나?", "스크립트가 위험한 예시와 통과 예시를 구분하나?"이다.
+
+### 실제 Codex smoke가 해결한 것
+
+`tmp/prompts-lab/006a-real-codex-hook-smoke/subject/`는 실제 Codex hook 연결을 확인하기 위한 disposable repo다.
+
+- `subject/.codex/hooks.json`: 실제 Codex가 읽는 hook 설정이다.
+- `subject/.codex/hooks/real_hook_probe.py`: 실제 Codex가 실행한 hook script다.
+- `subject/.codex/hook-log.jsonl`: hook script가 받은 실제 event를 기록한 증거다.
+
+이 단계가 해결한 질문은 "Codex가 이 hook을 실제로 발견하나?", "trust review가 필요한가?", "PreToolUse가 Bash 실행 전에 실제로 막을 수 있나?", "Stop hook이 실제로 continuation을 만들 수 있나?"이다.
+
+### 실제 호출 순서
+
+실제 성공 흐름은 다음과 같았다.
+
+1. Codex TUI를 `subject/`에서 실행했다.
+2. Codex가 `subject/.codex/hooks.json`을 발견하고 `3 hooks are new or changed` review를 띄웠다.
+3. trust 후 `UserPromptSubmit`이 실행되어 prompt context를 추가했다.
+4. Codex가 `echo CODEX_HOOK_BLOCK_ME` Bash command를 실행하려고 했다.
+5. `PreToolUse`가 먼저 실행되어 `tool_name: "Bash"`와 `tool_input.command`를 받았다.
+6. hook script가 `permissionDecision: "deny"`를 반환했고 Bash command는 차단됐다.
+7. Codex가 "command was blocked"라는 응답을 만들었다.
+8. `Stop`이 `stop_hook_active: false` 상태로 실행되어 한 번 더 이어가라고 요청했다.
+9. Codex가 continuation 응답을 만든 뒤 `Stop`이 `stop_hook_active: true` 상태로 다시 실행됐다.
+
+### 그래서 무엇이 검증됐나
+
+- mock은 "정책과 코드 로직"을 검증했다.
+- 실제 smoke는 "Codex lifecycle과 hook 출력 해석"을 검증했다.
+- parent repo에 hook을 도입해도 된다는 결론은 아직 아니다. 도입 여부는 `017-final-selection`에서 별도 판단해야 한다.
+
 ## 헷갈린 점
 
 - 실제 개발 단계로 넘어간 뒤에도 `ProjectSettings/`와 `Packages/`를 계속 block할지, 승인 기반 예외를 둘지는 아직 결정하지 않았다.
