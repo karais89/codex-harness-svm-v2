@@ -1,0 +1,14 @@
+{
+  "_lab": {
+    "expected": "passed"
+  },
+  "session_id": "mock-session",
+  "turn_id": "mock-turn",
+  "transcript_path": null,
+  "cwd": "/Users/kaya/Documents/Codex/codex-harness-svm-v2",
+  "hook_event_name": "Stop",
+  "permission_mode": "default",
+  "model": "mock-model",
+  "stop_hook_active": false,
+  "last_assistant_message": "수정 완료했습니다. 검증: python3 run_smoke_tests.py 통과."
+}

@@ -1,0 +1,13 @@
+{
+  "_lab": {
+    "expected": "context"
+  },
+  "session_id": "mock-session",
+  "turn_id": "mock-turn",
+  "transcript_path": null,
+  "cwd": "/Users/kaya/Documents/Codex/codex-harness-svm-v2",
+  "hook_event_name": "UserPromptSubmit",
+  "permission_mode": "default",
+  "model": "mock-model",
+  "prompt": "이제 Safe Village Micro 구현으로 넘어가서 Assets/ 아래 gameplay code를 만들어줘."
+}
