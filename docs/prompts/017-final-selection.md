@@ -22,7 +22,7 @@ prompts lab의 모든 결과를 바탕으로 Safe Village Micro 개발에 실제
 읽을 문서:
 - docs/prompts/README.md
 - docs/prompts/
-- docs/prompt-results/
+- docs/prompt-results/ (우선 근거)
 - docs/decisions.md
 - docs/progress.md
 
@@ -42,11 +42,15 @@ prompts lab의 모든 결과를 바탕으로 Safe Village Micro 개발에 실제
 - 보류
 - 폐기
 - 이유
-- 다음 작업 순서
+- 다음 작업 순서(문서 기록, 채택 결정, 운영 규칙 정리 같은 governance 단계만)
 - 구현으로 넘어가기 전 체크리스트
 
 중요:
 - 새 기능 제안보다 실험 결과 기반 선택에 집중해라.
+- docs/prompt-results/를 우선 근거로 사용해라.
+- 누락된 결과 파일은 별도로 표시해라.
+- 각 결론에는 근거 파일과 confidence(높음/중간/낮음)를 붙여라.
+- 다음 작업 순서는 Unity 구현 task가 아니라 문서 기록, 채택 결정, 운영 규칙 정리 같은 governance 단계로 제한해라.
 - 모든 것을 다 채택하지 마라.
 - 작은 구성을 우선 추천해라.
 ```

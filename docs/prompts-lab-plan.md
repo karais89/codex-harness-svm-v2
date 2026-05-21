@@ -1,3 +1,9 @@
+# Archive Notice
+
+이 문서는 Prompts Lab의 원래 계획을 남겨두는 보존 문서다.
+현재 운영 기준은 `docs/prompts/README.md`와 `docs/prompts/`의 numbered prompt files이다.
+본문 안의 `docs/prompts.md` 참조는 historical context로 보존한다.
+
 맞아. 이제 방향이 더 선명해졌어.
 
 이번 `docs/prompts.md`는 **“Codex에게 실제 작업을 시키는 프롬프트 모음”**이 아니라, **네가 Codex/LLM의 구조와 사용법에 익숙해지기 위한 실험 프롬프트 카탈로그**로 만드는 게 맞다.
