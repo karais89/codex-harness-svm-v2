@@ -36,11 +36,13 @@
    - smoke test는 `/private/tmp`의 throwaway repo에서 진행한다.
    - smoke test에서는 생성 파일, 설정, issue tracker 방식, PRD/issues 위치만 관찰한다.
    - Matt skills가 실제로 만드는 산출물을 tmp smoke에서 확인한 뒤, 그대로 채택할지, 위치만 조정할지, 공식 구조에는 넣지 않고 참조만 할지 결정한다.
+   - 실제 setup은 first playable 구현 전에 진행한다.
+   - PRD/issues 생성은 first playable 구현 방식 결정 후 진행한다.
 
 4. custom skills 도입 경로는 채택한다.
    - 프로젝트 전용 custom skill은 자동 trigger 방식으로 만들지 않는다.
    - review/evaluator skill은 사용자가 `$`로 명시 호출하는 방식을 우선한다.
-   - 첫 custom skill은 AI gap review 이후 선정한다.
+   - 첫 custom skill은 first playable 이후 AI gap review에서 선정한다.
    - 현재 1순위 후보는 `ai-persona-architect-evaluator`다.
    - 보조 후보는 `mistake-to-guardrail-reviewer`, `unity-micro-scope-guard`다.
 
@@ -48,13 +50,18 @@
    - hooks는 guardrail 후보 계층으로 본다. 단, 완전한 보안 경계로 보지는 않는다.
    - 첫 실용 후보는 `Stage Router Hook`과 `Protected Unity Edit Guard`다.
    - blocking 동작을 켜기 전에 dry-run 또는 warning smoke test를 거친다.
-   - smoke 결과를 확인한 뒤 실제 채택 범위와 강제 수준을 정한다.
+   - first playable 이후 smoke 결과를 확인한 뒤 실제 채택 범위와 강제 수준을 정한다.
    - 후속 후보는 completion verification, permission/escalation guard, decision capture다.
 
 6. MCP 도입 경로는 채택한다.
-   - 구현 단계에서 Editor 상태 검증에는 검증된 Unity MCP를 우선 검토한다.
-   - Scene, GameObject, Component, Console, Play Mode 상태 확인은 MCP 대상이다.
-   - 실제 MCP 도구와 사용 범위는 Unity 환경 확인 후 확정한다.
+   - Unity MCP 후보는 `IvanMurzak/Unity-MCP`로 둔다. 단, 현재는 검증 완료가 아니라 smoke gate 전 후보 상태다.
+   - first playable 구현에서 MCP는 smoke gate를 통과한 경우에만 구현 보조와 검증 보조로 사용한다.
+   - Scene 상태 확인, GameObject/Component 생성, prefab 생성 또는 연결, Canvas/UI 배치, Play Mode 상태, Console log, screenshot 확인은 MCP 대상이다.
+   - Gameplay rule과 핵심 상태 전이는 C# 코드와 문서 기준으로 유지한다.
+   - scene, prefab, asset, ProjectSettings 변경은 diff, Console, Play Mode, screenshot 중 적절한 검증으로 확인한다.
+   - `unity-mcp-cli status` 같은 상태 표시만으로는 성공으로 보지 않는다. 실제 tool call로 scene 읽기, 임시 GameObject 생성/조회/삭제, Console log 조회, screenshot 확인까지 통과해야 한다.
+   - smoke 중 package version mismatch, cloud/local port 혼선, Codex session의 MCP namespace 미노출이 발생할 수 있으므로 설치 파일 diff와 실제 tool call 결과를 함께 본다.
+   - 실제 MCP 도구와 사용 범위는 Unity 환경 확인과 smoke gate 이후 확정한다.
    - custom MCP tool은 반복 필요가 확인되기 전까지 공식 도구로 승격하지 않는다.
 
 7. plugin 제작은 보류한다.
@@ -129,18 +136,18 @@
 4. 병렬 Codex 조정 방식 확정. 상태: `docs/current.md` 폐기, GitHub Issues/branch/worktree 중심으로 조정.
 5. 결정 기록 문서 위치 확정. 상태: `docs/decisions/` + `index.md` 방식 채택.
 6. Matt skills tmp smoke 계획 확정. 상태: 완료.
-7. 첫 custom skill 후보 결정. 상태: AI gap review 이후 확정.
-8. 첫 hook dry-run/warn 기준 확정. 상태: smoke 이후 적용 범위 확정.
-9. Unity MCP 사용 규칙 확정. 상태: Unity 환경 확인 후 도구와 범위 확정.
+7. 첫 custom skill 후보 결정. 상태: first playable 이후 AI gap review로 이동.
+8. 첫 hook dry-run/warn 기준 확정. 상태: first playable 이후 smoke로 이동.
+9. Unity MCP 사용 규칙 확정. 상태: `IvanMurzak/Unity-MCP` 후보 채택, smoke gate 통과 전에는 검증 완료로 보지 않음.
 10. first playable 범위와 완료 기준 문서 생성. 상태: 완료.
+11. Matt skills 실제 setup 완료. 상태: first playable 구현 전 진행.
 
 ## 가까운 진행 단계
 
-1. AI gap review를 진행하고 첫 custom skill을 고른다.
-2. 첫 hook dry-run/warn smoke test를 설계한다.
-3. Unity MCP 사용 규칙을 정한다.
-4. first playable의 미정 항목을 확정한다.
-5. 그 다음 Unity 구현을 시작한다.
+1. Matt skills 실제 setup을 진행한다.
+2. `IvanMurzak/Unity-MCP` 설치와 smoke gate를 진행한다.
+3. first playable 구현 방식을 정한다.
+4. 그 다음 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
 

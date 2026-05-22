@@ -87,6 +87,7 @@ first playable은 다음을 만족하면 완료로 본다.
 - 서로 다른 배치 선택을 최소 2번 확인한다.
 - 성공 경로와 실패 경로를 각각 최소 1번 확인한다.
 - Console error 여부를 확인한다.
+- `IvanMurzak/Unity-MCP`가 별도 smoke gate를 통과한 경우에만 scene 상태, UI 배치, Console log, screenshot 확인에 사용한다.
 
 ## 아직 정하지 않은 것
 
