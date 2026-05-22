@@ -1,0 +1,21 @@
+{
+  "name": "SafeVillage.Core.Tests",
+  "rootNamespace": "SafeVillage.Core.Tests",
+  "references": [
+    "SafeVillage.Core"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

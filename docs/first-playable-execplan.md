@@ -16,8 +16,9 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 - [x] (2026-05-22T23:13:15Z) first playable 구현을 위한 deterministic domain rule과 Unity UI adapter 범위를 이 ExecPlan에 초안으로 기록했다.
 - [x] (2026-05-22T23:25:57Z) first playable 전체를 하나의 ExecPlan으로 관리하고 GitHub Issues로 vertical slice를 분해하는 방향을 사용자와 확정했다.
 - [x] (2026-05-22T23:25:57Z) GitHub Issues #1-#5를 dependency order로 발행하고 이 ExecPlan의 work queue로 연결했다.
-- [ ] 순수 C# domain assembly와 Edit Mode tests를 추가하고 domain tests를 통과시킨다.
-- [ ] Unity Runtime UI adapter를 추가하고 scene에서 Play Mode로 하루 루프를 조작할 수 있게 만든다.
+- [x] (2026-05-22T23:41:28Z) Issue #2 범위로 `SafeVillage.Core` 초기 상태 domain model과 Edit Mode tests를 추가하고 `SafeVillage.Core.Tests` 2개를 통과시켰다.
+- [x] (2026-05-22T23:41:28Z) Issue #2 범위로 `SafeVillage.Runtime` presenter와 `Assets/Scenes/SafeVillageMicro.unity` scene을 추가하고 Play Mode에서 초기 Day/Food/Wall/Villagers/Outcome text 표시를 확인했다.
+- [ ] Issue #3 범위에서 assignment validation, one-day resolution, result log, invalid assignment UI를 추가한다.
 - [ ] 성공 경로와 실패 경로를 Play Mode에서 수동 검증하고, Unity MCP로 Console log, screenshot, scene 상태를 확인한다.
 - [ ] 검증 결과를 이 ExecPlan의 `Outcomes & Retrospective`와 `Artifacts and Notes`에 기록한 뒤 커밋한다.
 
@@ -29,6 +30,8 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
   Evidence: `Library/PackageCache/com.unity.ugui@473409526770/Runtime/TMP/Unity.TextMeshPro.asmdef`가 존재한다.
 - Observation: `docs/first-playable.md`는 구현 계획서가 아니라 범위와 완료 기준 문서이며, 마지막 항목에는 ExecPlan 여부가 아직 미정으로 남아 있다.
   Evidence: `docs/first-playable.md`의 "아직 정하지 않은 것" 섹션이 "구현을 ExecPlan으로 진행할지 여부"만 포함한다.
+- Observation: Unity `tests-run`은 열린 scene이 dirty이면 Edit Mode tests도 거부한다.
+  Evidence: 첫 `tests-run` 시도는 unsaved `(untitled)` scene 때문에 실패했다. `Assets/Scenes/SafeVillageMicro.unity`를 만들고 저장한 뒤 같은 test assembly가 Passed 상태가 됐다.
 ## Decision Log
 
 - Decision: active ExecPlan 파일은 `docs/first-playable-execplan.md`에 둔다.
@@ -53,7 +56,9 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 ## Outcomes & Retrospective
 
-아직 구현 전이다. 사용자 승인 후 각 milestone의 실제 결과, 검증 명령, 실패와 수정 사항을 여기에 누적한다.
+Issue #2는 완료됐다. 현재 Play Mode에서 `SafeVillageMicro` scene을 열면 `SafeVillageGamePresenter`가 `VillageGame`의 초기 상태를 읽어 `Safe Village Micro`, `Day: 1`, `Food: 3`, `Wall: 3/5`, `Villagers: 3`, `Outcome: InProgress`를 표시한다. `Resolve Day`, assignment controls, day report log는 아직 없으며 Issue #3 범위로 남긴다.
+
+검증 중 처음 `tests-run`은 dirty untitled scene 때문에 실패했다. 이 실패는 gameplay code 문제가 아니라 Unity test runner precondition 문제였고, 새 scene을 저장한 뒤 재실행해 `SafeVillage.Core.Tests` 2개가 통과했다. 최종 Console 검증 전 Console log를 clear한 뒤 Error와 Exception이 비어 있음을 다시 확인했다.
 
 ## Context and Orientation
 
@@ -280,6 +285,42 @@ GitHub issue queue는 dependency order로 다음과 같다.
 
 구현 중 새 test output, MCP response summary, screenshot observation, final diff summary를 이 섹션에 추가한다.
 
+Issue #2 구현 산출물은 다음과 같다.
+
+    Assets/SafeVillage/Core/SafeVillage.Core.asmdef
+    Assets/SafeVillage/Core/VillageOutcome.cs
+    Assets/SafeVillage/Core/VillageState.cs
+    Assets/SafeVillage/Core/VillageGame.cs
+    Assets/SafeVillage/Runtime/SafeVillage.Runtime.asmdef
+    Assets/SafeVillage/Runtime/SafeVillageGamePresenter.cs
+    Assets/Tests/EditMode/SafeVillage.Core.Tests/SafeVillage.Core.Tests.asmdef
+    Assets/Tests/EditMode/SafeVillage.Core.Tests/VillageGameTests.cs
+    Assets/Scenes/SafeVillageMicro.unity
+
+Issue #2 검증 결과는 다음과 같다.
+
+    unity-mcp-cli run-tool tests-run --input '{"testMode":"EditMode","testAssembly":"SafeVillage.Core.Tests","includePassingTests":true,"includeMessages":true}'
+    Status: Passed
+    TotalTests: 2
+    PassedTests: 2
+
+    unity-mcp-cli run-tool gameobject-component-get --input '{"gameObjectRef":{"instanceID":0,"path":"SafeVillageGame/SafeVillageCanvas/InitialStateText"},"componentRef":{"index":2,"instanceID":-6342},"paths":["text"]}'
+    text: Safe Village Micro
+          Day: 1
+          Food: 3
+          Wall: 3/5
+          Villagers: 3
+          Outcome: InProgress
+
+    unity-mcp-cli run-tool screenshot-game-view --input '{}'
+    Screenshot from Game View (714x402)
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Error","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Exception","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
 ## Interfaces and Dependencies
 
 `SafeVillage.Core`는 Unity runtime assemblies를 참조하지 않는다. 이 assembly는 deterministic state transition만 제공한다. Public API는 `VillageGame`, `VillageState`, `VillageAssignment`, `DayReport`, `VillageOutcome` 중심으로 유지한다.
@@ -295,3 +336,5 @@ GitHub issue queue는 dependency order로 다음과 같다.
 2026-05-22 / Codex: `docs/first-playable.md`와 현재 repo 상태를 기준으로 first playable 구현용 initial ExecPlan을 작성했다. 아직 사용자 승인 전이므로 gameplay code와 Unity scene 변경은 시작하지 않았다.
 
 2026-05-22 / Codex: 사용자가 first playable 전체 ExecPlan 하나와 GitHub issue vertical slice 분해를 승인했다. `docs/first-playable.md`와 `docs/bootstrap-plan.md`를 확정 방향에 맞게 갱신하고, GitHub Issues #1-#5를 발행했다.
+
+2026-05-22 / Codex: Issue #2를 실행했다. `SafeVillage.Core` 초기 상태, `SafeVillage.Core.Tests`, `SafeVillage.Runtime` presenter, `SafeVillageMicro` scene을 추가했다. Day resolution과 assignment UI는 Issue #3으로 남겼다.
