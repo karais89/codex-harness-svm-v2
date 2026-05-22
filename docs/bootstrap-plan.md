@@ -109,7 +109,6 @@
 - `AGENTS.md`: Codex가 항상 따라야 할 짧은 행동 규칙과 문서 지도.
 - `docs/agents/commit-policy.md`: 작업 완료 후 커밋 기본값과 stage/report 규칙.
 - `docs/agents/decision-policy.md`: 장기 결정 파일과 `docs/decisions/index.md` 갱신 규칙.
-- `docs/agents/documentation-policy.md`: 원천 문서와 setup 생성 문서의 의미와 경로를 보존하는 규칙.
 - `docs/agents/ai-mistakes.md`: 재발하면 안 되는 AI 실수를 guardrail로 남기는 문서.
 - `.agent/PLANS.md`: OpenAI ExecPlan 원천 기준 원문.
 - `docs/decisions/index.md`: 장기 결정 파일의 라우팅 index. 필요할 때 생성한다.
@@ -177,7 +176,6 @@ SVM 반영 판단:
 - issue tracker는 GitHub Issues로 설정됐다.
 - Matt skills의 `CONTEXT.md`와 `docs/adr/`는 skill이 실제로 사용하는 domain glossary와 ADR 경로로 유지한다.
 - SVM의 `docs/decisions/` 정책은 bootstrap/governance decision 기록용으로 별도 유지한다.
-- 외부 원천 문서나 setup 생성 문서의 의미를 로컬 정책으로 치환하지 않는 규칙을 `docs/agents/documentation-policy.md`에 추가했다.
 - 같은 실수의 재발을 막기 위해 `docs/agents/ai-mistakes.md`에 guardrail 항목을 추가했다.
 
 ## 현재 상태
