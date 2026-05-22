@@ -98,6 +98,8 @@ first playable은 다음을 만족하면 완료로 본다.
 - Console error 여부를 확인한다.
 - `IvanMurzak/Unity-MCP`는 scene 상태, UI 배치, Console log, screenshot 확인에 사용할 수 있다.
 
-## 아직 정하지 않은 것
+## 구현 계획 방식
 
-- 구현을 ExecPlan으로 진행할지 여부
+- first playable 전체를 하나의 ExecPlan으로 관리한다.
+- GitHub Issues는 ExecPlan의 milestone 또는 vertical slice를 나눈 작업 단위로 사용한다.
+- ExecPlan은 전체 구현 맥락과 검증 기록을 유지하고, issue는 AFK agent가 집을 수 있는 작은 범위와 의존성을 관리한다.

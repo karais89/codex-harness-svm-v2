@@ -149,8 +149,9 @@
 
 ## 가까운 진행 단계
 
-1. first playable ExecPlan 작성 여부와 issue 분해 방식을 정한다.
-2. 그 다음 Unity 구현을 시작한다.
+1. first playable 전체 ExecPlan을 기준으로 GitHub Issues를 vertical slice로 분해한다.
+2. issue label vocabulary가 GitHub repo에 실제로 존재하는지 확인한다.
+3. 첫 구현 issue부터 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
 
@@ -177,6 +178,7 @@ SVM 반영 판단:
 - setup 결과 root `AGENTS.md`에 Agent skills section이 추가됐다.
 - setup 결과 `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, `docs/agents/domain.md`가 추가됐다.
 - issue tracker는 GitHub Issues로 설정됐다.
+- `docs/agents/triage-labels.md`의 5개 label vocabulary가 GitHub repo에 생성됐다.
 - Matt skills의 `CONTEXT.md`와 `docs/adr/`는 skill이 실제로 사용하는 domain glossary와 ADR 경로로 유지한다.
 - SVM의 `docs/decisions/` 정책은 bootstrap/governance decision 기록용으로 별도 유지한다.
 - 같은 실수의 재발을 막기 위해 `docs/agents/ai-mistakes.md`에 guardrail 항목을 추가했다.
@@ -198,4 +200,5 @@ SVM 반영 판단:
 - 현재 전환 작업은 이 문서에서 이어간다.
 - Matt skills setup과 Unity MCP smoke gate는 완료됐다.
 - first playable 구현 방식은 순수 C# domain first, Unity UI thin adapter로 확정했다.
+- first playable은 전체 ExecPlan 하나와 GitHub Issues #1-#5 vertical slice로 진행한다.
 - 이 결정들로부터 시작된 Unity gameplay 구현은 아직 없다.
