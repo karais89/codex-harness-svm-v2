@@ -89,9 +89,11 @@
    - 이번 버전은 기존 컨셉을 새로 찾는 단계가 아니라, SVM v3에서 마이크로 루프를 구현하고 검증하는 단계다.
    - 핵심 감각은 `오늘 뭘 포기할 것인가?`다.
    - 기본 루프는 `DayStart -> Assignment -> DayAction -> NightCheck -> DayEnd`다.
-   - 최소 자원은 Food, Safety 또는 Wall, Labor 또는 Villagers다.
-   - 목표는 1개 씬, 간단 UI, 3-5일 생존 검증이다.
-   - 실패 조건은 식량 부족 또는 안전 붕괴다.
+   - 최소 자원은 Food, Wall, Villagers다.
+   - 목표는 1개 씬, 간단 UI, 3일 생존 검증이다.
+   - 실패 조건은 식량 부족 또는 벽 붕괴다.
+   - Runtime UI는 Unity UI와 TextMeshPro를 사용하고, 기본 폰트 후보는 Pretendard다.
+   - Editor tool 작업이 필요하면 UI Toolkit을 우선 사용한다.
    - 3D 마을, 건물/애니메이션, 물/전력/의약품, 장기 캠페인, 스토리 이벤트는 first playable 범위에서 제외한다.
 
 ## 문서 역할 분리
@@ -102,6 +104,7 @@
 - `docs/agents/decision-policy.md`: 장기 결정 파일과 `docs/decisions/index.md` 갱신 규칙.
 - `.agent/PLANS.md`: OpenAI ExecPlan 원천 기준 원문.
 - `docs/decisions/index.md`: 장기 결정 파일의 라우팅 index. 필요할 때 생성한다.
+- `docs/first-playable.md`: first playable 범위와 완료 기준.
 - `docs/bootstrap-plan.md`: 위 문서들이 준비될 때까지 사용하는 임시 전환 계획.
 
 ## 계획 진행 방식
@@ -129,14 +132,14 @@
 7. 첫 custom skill 후보 결정. 상태: AI gap review 이후 확정.
 8. 첫 hook dry-run/warn 기준 확정. 상태: smoke 이후 적용 범위 확정.
 9. Unity MCP 사용 규칙 확정. 상태: Unity 환경 확인 후 도구와 범위 확정.
-10. first playable 범위와 완료 기준 문서 생성. 상태: 목표 채택, 문서화 필요.
+10. first playable 범위와 완료 기준 문서 생성. 상태: 완료.
 
 ## 가까운 진행 단계
 
 1. AI gap review를 진행하고 첫 custom skill을 고른다.
 2. 첫 hook dry-run/warn smoke test를 설계한다.
 3. Unity MCP 사용 규칙을 정한다.
-4. first playable 범위와 완료 기준을 문서화한다.
+4. first playable의 미정 항목을 확정한다.
 5. 그 다음 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
