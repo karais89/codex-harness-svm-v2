@@ -33,7 +33,7 @@ When writing complex features or significant refactors, use an ExecPlan (as desc
 
 ### Domain docs
 
-Single-context layout을 사용한다. See `docs/agents/domain.md`.
+SVM single-context layout을 사용한다. Matt skills가 `ADR`을 언급하면 이 repo에서는 `docs/decisions/` 정책으로 해석한다. See `docs/agents/domain.md`.
 
 ## Commit Policy
 

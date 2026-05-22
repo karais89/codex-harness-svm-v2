@@ -140,14 +140,13 @@
 8. 첫 hook dry-run/warn 기준 확정. 상태: first playable 이후 smoke로 이동.
 9. Unity MCP 사용 규칙 확정. 상태: `IvanMurzak/Unity-MCP` 후보 채택, smoke gate 통과 전에는 검증 완료로 보지 않음.
 10. first playable 범위와 완료 기준 문서 생성. 상태: 완료.
-11. Matt skills 실제 setup 완료. 상태: first playable 구현 전 진행.
+11. Matt skills 실제 setup 완료. 상태: 완료.
 
 ## 가까운 진행 단계
 
-1. Matt skills 실제 setup을 진행한다.
-2. `IvanMurzak/Unity-MCP` 설치와 smoke gate를 진행한다.
-3. first playable 구현 방식을 정한다.
-4. 그 다음 Unity 구현을 시작한다.
+1. `IvanMurzak/Unity-MCP` 설치와 smoke gate를 진행한다.
+2. first playable 구현 방식을 정한다.
+3. 그 다음 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
 
@@ -167,6 +166,14 @@ SVM 반영 판단:
 - local markdown은 fallback으로만 본다.
 - SVM에는 Matt skills 산출물 경로를 미리 박지 않는다.
 - local markdown을 쓰더라도 `.scratch/`는 작업 산출물 후보이지 영구 docs 구조로 보지 않는다.
+
+## Matt skills setup 결과
+
+- Matt skills 설치 snapshot은 `.agents/skills/`와 `skills-lock.json`에 기록했다.
+- setup 결과 root `AGENTS.md`에 Agent skills section이 추가됐다.
+- setup 결과 `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, `docs/agents/domain.md`가 추가됐다.
+- issue tracker는 GitHub Issues로 설정됐다.
+- setup template의 `docs/adr/` 기준은 SVM의 `docs/decisions/` 정책과 충돌하므로 `docs/agents/domain.md`에서 SVM 기준으로 보정했다.
 
 ## 현재 상태
 
