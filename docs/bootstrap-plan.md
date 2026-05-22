@@ -173,7 +173,8 @@ SVM 반영 판단:
 - setup 결과 root `AGENTS.md`에 Agent skills section이 추가됐다.
 - setup 결과 `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, `docs/agents/domain.md`가 추가됐다.
 - issue tracker는 GitHub Issues로 설정됐다.
-- setup template의 `docs/adr/` 기준은 SVM의 `docs/decisions/` 정책과 충돌하므로 `docs/agents/domain.md`에서 SVM 기준으로 보정했다.
+- Matt skills의 `CONTEXT.md`와 `docs/adr/`는 skill이 실제로 사용하는 domain glossary와 ADR 경로로 유지한다.
+- SVM의 `docs/decisions/` 정책은 bootstrap/governance decision 기록용으로 별도 유지한다.
 
 ## 현재 상태
 
