@@ -58,7 +58,7 @@ docs/prompts/README.md의 일반 모드 wrapper를 적용했다.
 
 ## Codex 응답 요약
 
-Codex는 `docs/prompt-results/`의 `001`-`016` 결과를 우선 근거로 삼아 Safe Village Micro에 실제 채택할 최소 운영 구성을 정리했다. 최종 선택은 root `AGENTS.md`, 제한적 `PLANS.md`/ExecPlan 기준, Matt skills 기본 workflow 후보, Unity MCP 사용 전제를 채택하는 쪽이다. 반대로 custom skills, parent repo hooks, plugin, subagent 구현 분담, `docs/threads`는 보류 또는 폐기로 정리했다. 구현으로 바로 넘어가지 않고, 017 결과 기록, 결정 문서 위치 선택, root `AGENTS.md`, `PLANS.md` 템플릿, Matt workflow smoke, 018 실행 같은 governance 단계를 먼저 진행해야 한다고 판단했다.
+Codex는 `docs/prompt-results/`의 `001`-`016` 결과를 우선 근거로 삼아 Safe Village Micro에 실제 채택할 운영 구성을 초안으로 정리했다. 이후 사용자가 017의 각 항목은 하나씩 확인받아야 한다고 정정했고, `AGENTS.md`, `PLANS.md`/ExecPlan, Matt skills, custom skills, hooks, MCP, plugin, `docs/threads`, Unity 구현 시작 조건을 순서대로 확정했다. 최종 선택은 root `AGENTS.md`, OpenAI 원문 기준의 `PLANS.md`/ExecPlan, Matt skills, `$` 명시 호출형 custom skills, practical hooks, Unity MCP를 채택하는 쪽이다. plugin은 지금 만들지 않되 SVM v1 완료 후 pluginization checkpoint를 필수로 두고, `docs/threads`는 폐기한다. Unity 구현은 governance 문서와 검증 기준이 잠긴 뒤 시작한다.
 
 ## 튜터 모드 상호작용 요약
 
@@ -116,40 +116,58 @@ Codex는 `docs/prompt-results/`의 `001`-`016` 결과를 우선 근거로 삼아
 | --- | --- | --- | --- | --- |
 | AGENTS.md 구조 | 채택 | root `AGENTS.md` 하나를 짧은 행동 규칙과 문서 지도로 둔다. 하위 AGENTS.md는 특정 폴더에서 반복 실패가 확인될 때만 검토한다. | `002-agents-md.md`, `003-docs-responsibility.md`, `016-midpoint-review-2026-05-21.md` | 높음 |
 | PLANS.md / ExecPlan | 채택, 제한 | `PLANS.md`는 템플릿/운영 규칙 문서로 둘 수 있지만 active ExecPlan은 first playable처럼 범위와 검증이 명확한 큰 작업에만 만든다. | `014-execplan-plans.md` | 높음 |
-| Matt skills | 채택, 검증 필요 | SVM v1의 기본 workflow 후보로 둔다. 다만 Matt skills 산출물을 곧바로 공식 project docs로 승격하지 않고 tmp/smoke 후 반영한다. | `008-unity-workflow.md`, `011-matt-skills-review.md`, `014-execplan-plans.md` | 중간 |
-| custom skills | 보류 | 자동 trigger는 사용자 선호와 맞지 않고, 현재 반복 workflow가 충분히 검증되지 않았다. 필요하면 `$` 명시 호출형 review skill만 후보로 둔다. | `005-skill-value-check.md`, `010-custom-skill-draft.md`, `011-matt-skills-review.md` | 높음 |
-| hooks | 보류 | mock과 disposable real smoke는 성공했지만 parent repo 도입 정책은 아직 확정되지 않았다. 1순위 후보는 `PreToolUse` 보호 경로 guard다. | `006-hooks-concepts.md`, `006a-hooks-guard-practice.md`, `007-llm-failure-modes.md` | 높음 |
-| MCP | 부분 채택 | 검증된 Unity MCP는 실제 Unity 검증 단계부터 사용 전제로 둔다. custom MCP는 학습 결과만 채택하고 공식 도입은 보류한다. | `012-mcp-concepts.md`, `012a-mcp-mock-tool.md` | 중간 |
-| plugin | 보류 | 아직 plugin에 묶을 skill, hook, MCP, script가 반복 workflow로 검증되지 않았다. 013a 산출물은 learning draft로만 둔다. | `013-plugin-concepts.md`, `013a-plugin-bundle-practice.md` | 높음 |
+| Matt skills | 채택, 검증 필요 | SVM v1의 기본 workflow 후보로 채택한다. 단, official repo 반영은 tmp smoke에서 installer/setup 산출물과 문서 경계가 확인된 뒤 진행한다. | `008-unity-workflow.md`, `011-matt-skills-review.md`, Matt skills upstream read-only inspection | 높음 |
+| custom skills | 채택, 첫 skill 별도 선정 | Matt skills가 커버하지 못하는 SVM/Unity/AI 활용 판단 영역을 custom skill이 맡는다. 자동 trigger는 금지하고 `$` 명시 호출형 review/evaluator skill로 만든다. 첫 후보는 018 이후 `ai-persona-architect-evaluator`를 1순위로 검토한다. | `005-skill-value-check.md`, `010-custom-skill-draft.md`, `011-matt-skills-review.md` | 높음 |
+| hooks | 채택, 단계적 활성화 | SVM에는 stage routing, Unity 보호 파일 guard, 완료 검증, 권한 상승 guard, 결정 기록 보조처럼 실용적인 guardrail이 필요하다. 첫 구현 후보는 `Stage Router Hook`과 `Protected Unity Edit Guard`로 두고, parent repo 활성화 전 dry-run/warn smoke를 거친다. | `006-hooks-concepts.md`, `006a-hooks-guard-practice.md`, `007-llm-failure-modes.md`, OpenAI Codex hooks docs | 높음 |
+| MCP | 채택, 단계적 도입 | 검증된 Unity MCP는 구현 검증 단계부터 사용한다. Scene, GameObject, Component, Console, Play Mode 상태 확인은 MCP 대상이다. custom MCP는 학습 결과만 보존하고 반복 필요가 생긴 뒤 별도 승인으로 만든다. | `012-mcp-concepts.md`, `012a-mcp-mock-tool.md` | 높음 |
+| plugin | 보류, 완료 후 checkpoint 채택 | 지금 plugin을 만들지는 않는다. 다만 SVM v1 완료 후 pluginization checkpoint를 필수 후속 단계로 두고, 실제 반복 사용된 AGENTS 규칙, custom skill, hooks, MCP, scripts, templates만 plugin 후보로 선별한다. | `013-plugin-concepts.md`, `013a-plugin-bundle-practice.md` | 높음 |
 | docs/threads 유지 여부 | 폐기 | 사용자가 `docs/threads` 개념을 원하지 않았고, 실험 문서와 프로젝트 문서 분리가 더 중요하다. | `009-project-structure.md` | 높음 |
-| 실제 Unity 구현 시작 조건 | 보류 | governance 기록, 최소 운영 규칙, Matt workflow smoke, Unity 검증 기준 정리 전에는 구현으로 넘어가지 않는다. | `011-matt-skills-review.md`, `014-execplan-plans.md`, `016-midpoint-review-2026-05-21.md` | 높음 |
+| 실제 Unity 구현 시작 조건 | 채택, 조건 충족 후 시작 | 구현 시작 조건을 공식 운영 기준으로 채택한다. 017 확정 결과 기록, 결정 문서 위치 선택, root `AGENTS.md`, OpenAI 원문 기준 `PLANS.md`, Matt smoke, 첫 custom skill 후보, 첫 hook dry-run/warn smoke, Unity MCP 기준, first playable 범위와 완료 기준을 잠근 뒤 구현을 시작한다. | `011-matt-skills-review.md`, `014-execplan-plans.md`, `016-midpoint-review-2026-05-21.md` | 높음 |
+
+### 사용자 확인 반영 결과
+
+| 번호 | 항목 | 사용자 확인 결과 |
+| --- | --- | --- |
+| 1 | AGENTS.md 구조 | 채택 확정. root `AGENTS.md` 하나를 짧은 행동 규칙과 문서 지도로 둔다. |
+| 2 | PLANS.md / ExecPlan | 채택 확정. OpenAI 원문/공식 글을 원천 기준으로 사용한다. |
+| 3 | Matt skills | 채택 확정. 단, official repo 반영 전 tmp smoke로 setup 산출물과 문서 경계를 확인한다. |
+| 4 | custom skills | 채택 확정. 자동 trigger 없이 `$` 명시 호출형으로 만들고, 첫 skill은 018 이후 선정한다. |
+| 5 | hooks | 채택 확정. Stage Router Hook과 Protected Unity Edit Guard를 우선 후보로 둔다. |
+| 6 | MCP | 채택 확정. Unity MCP부터 단계적으로 도입하고, custom MCP는 반복 필요가 생긴 뒤 별도 판단한다. |
+| 7 | plugin | 보류 확정. 단, SVM v1 완료 후 pluginization checkpoint를 필수로 둔다. |
+| 8 | docs/threads | 폐기 확정. 대화 흐름 기록 폴더는 만들지 않는다. |
+| 9 | Unity 구현 시작 조건 | 채택 확정. 구현 시작 전 governance/검증 조건을 공식 기준으로 잠근다. |
 
 ## 내가 이해한 점
 
-- Safe Village Micro의 최소 구성은 "작은 repo-local 규칙 + Matt skills 후보 + Unity 검증 기준"으로 시작해야 한다.
-- 모든 확장 도구를 채택하는 것이 아니라, AGENTS.md와 PLANS.md는 가볍게 채택하고 custom skill, hook, plugin, subagent 구현 분담은 보류하는 쪽이 현재 근거와 맞다.
-- Matt skills는 workflow 후보로 긍정하지만, 산출물의 공식 문서 반영은 별도 규칙이 필요하다.
+- Safe Village Micro의 최소 운영 구성은 "root AGENTS.md + OpenAI 원문 기준 PLANS.md/ExecPlan + Matt skills + 명시 호출형 custom skill + practical hooks + Unity MCP"로 정리됐다.
+- custom skills와 hooks는 보류가 아니라 채택이다. 다만 첫 skill/hook은 별도로 선정하고 dry-run/smoke를 거친다.
+- Matt skills는 workflow로 채택하지만, 산출물의 공식 문서 반영은 tmp smoke 후 결정해야 한다.
 - Unity MCP는 live Editor 상태 확인에 필요하지만, custom MCP를 공식 도구로 승격하려면 반복 필요와 운영 정책이 더 필요하다.
+- plugin은 지금 만들지 않지만, SVM v1 완료 후 pluginization checkpoint를 강제한다.
 
 ## 실제로 도움 된 점
 
 - Prompts Lab의 실험 결과가 실제 개발 전 governance 선택으로 압축됐다.
+- 항목별 사용자 확인을 거쳐 초안 판단과 최종 확정 판단을 분리했다.
 - 구현 시작 전에 필요한 문서 작업 순서가 정리됐다.
-- root `AGENTS.md`, `PLANS.md` 템플릿, Matt workflow smoke, 018 실행이 다음 단계로 분리됐다.
-- hook, custom skill, plugin을 "좋아 보이므로 도입"하지 않고 보류할 근거가 명확해졌다.
+- root `AGENTS.md`, `PLANS.md` 템플릿, Matt workflow smoke, 018 실행, 첫 custom skill/hook 후보 선정이 다음 단계로 분리됐다.
+- plugin은 지금 만들지 않되 프로젝트 완료 후 재사용 가능한 workflow 묶음으로 검토할 강제 checkpoint가 생겼다.
 
 ## 헷갈린 점
 
 - `docs/decisions.md`를 단일 파일로 만들지, 009에서 논의한 `docs/90-decisions/` 구조로 갈지는 아직 확정되지 않았다.
 - Matt skills 설치 후 생성되는 문서 구조가 SVM의 future docs 구조와 얼마나 충돌하는지는 아직 smoke test 전이다.
-- Unity MCP 사용 시점과 custom MCP 도입 기준은 실제 Unity 구현 반복을 봐야 더 정확해진다.
+- 첫 custom skill을 `ai-persona-architect-evaluator`, `mistake-to-guardrail-reviewer`, `unity-micro-scope-guard` 중 무엇으로 할지는 018 이후 확정해야 한다.
+- 첫 hook을 Stage Router와 Unity Edit Guard 중 어떤 순서로 구현할지는 dry-run/warn smoke 설계 때 정한다.
 
 ## 위험하거나 과해 보인 점
 
 - final selection 직후 바로 Unity 구현으로 넘어가면 Prompts Lab 결과가 실제 운영 규칙으로 정리되지 않은 채 흩어질 수 있다.
 - Matt skills 산출물을 검토 없이 공식 project docs로 받아들이면 실험 문서와 프로젝트 문서가 다시 섞일 수 있다.
-- parent repo hook을 너무 일찍 켜면 필요한 Unity 작업까지 막거나 trust/운영 부담이 생길 수 있다.
-- custom skill과 plugin을 지금 만들면 반복성이 검증되지 않은 workflow를 유지보수 대상으로 고정할 수 있다.
+- parent repo hook을 너무 강하게 켜면 필요한 Unity 작업까지 막거나 trust/운영 부담이 생길 수 있다.
+- custom skill을 자동 trigger로 만들면 사용자가 원하지 않는 시점에 개입할 위험이 있다.
+- plugin을 지금 만들면 반복성이 검증되지 않은 workflow를 유지보수 대상으로 고정할 수 있다.
 
 ## 채택 여부
 
@@ -161,7 +179,7 @@ Codex는 `docs/prompt-results/`의 `001`-`016` 결과를 우선 근거로 삼아
 
 ## 채택/보류/폐기 이유
 
-017 최종 선택은 지금까지의 Prompts Lab 결과를 실제 Safe Village Micro 개발 전 최소 운영 구성으로 압축하는 데 성공했다. 채택하는 것은 이 결과 자체와 다음 governance 순서이며, Unity 구현 시작이나 custom skill/hook/plugin의 즉시 도입은 아니다. 현재 근거상 가장 안전한 선택은 root `AGENTS.md`와 제한적 `PLANS.md` 기준을 먼저 정하고, Matt skills와 Unity MCP는 검증 단계로 가져가되 나머지 확장 도구는 보류하는 것이다.
+017 최종 선택은 지금까지의 Prompts Lab 결과를 실제 Safe Village Micro 개발 전 운영 구성으로 압축하는 데 성공했다. 사용자 확인을 거쳐 `AGENTS.md`, `PLANS.md`/ExecPlan, Matt skills, custom skills, hooks, MCP, 구현 시작 조건은 채택으로 확정했다. plugin은 지금 제작하지 않지만 SVM v1 완료 후 pluginization checkpoint를 필수로 두며, `docs/threads`는 폐기한다. 채택은 즉시 무차별 적용이 아니라, 각 항목을 governance 문서와 smoke/dry-run 절차로 안전하게 반영한다는 뜻이다.
 
 ## 다음 실험 프롬프트
 
@@ -185,4 +203,4 @@ docs/prompts/018-ai-gap-map.md를 일반 모드로 실행해줘.
 
 후속 작업 메모:
 
-`다음 governance 순서는 017 결과 기록, 결정 문서 위치 선택, root AGENTS.md 초안, PLANS.md 템플릿, Matt workflow smoke, 018-ai-gap-map 실행이다. custom skills, parent repo hooks, plugin, subagent 구현 분담은 기본 비활성/보류 상태로 둔다. Unity 구현은 first playable 범위와 완료 기준을 governance 문서로 잠근 뒤 시작한다.`
+`다음 governance 순서는 사용자 확인 반영본 커밋과 태그, 결정 문서 위치 선택, root AGENTS.md 초안, OpenAI 원문 기준 PLANS.md 템플릿, Matt workflow tmp smoke, 018-ai-gap-map 실행, 첫 custom skill 후보 선정, Stage Router/Unity Edit Guard dry-run 설계다. plugin 제작은 지금 하지 않고 SVM v1 완료 후 pluginization checkpoint에서 검토한다. Unity 구현은 first playable 범위와 완료 기준을 governance 문서로 잠근 뒤 시작한다.`
