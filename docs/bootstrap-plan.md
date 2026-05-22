@@ -85,6 +85,15 @@
    - `docs/decisions/index.md`는 라우팅용 index로 두며, decision 파일 생성 또는 상태 변경 시 반드시 함께 갱신한다.
    - 상세 규칙은 `docs/agents/decision-policy.md`를 따른다.
 
+12. first playable 목표는 Safe Village 마이크로 하루 루프 구현과 검증이다.
+   - 이번 버전은 기존 컨셉을 새로 찾는 단계가 아니라, SVM v3에서 마이크로 루프를 구현하고 검증하는 단계다.
+   - 핵심 감각은 `오늘 뭘 포기할 것인가?`다.
+   - 기본 루프는 `DayStart -> Assignment -> DayAction -> NightCheck -> DayEnd`다.
+   - 최소 자원은 Food, Safety 또는 Wall, Labor 또는 Villagers다.
+   - 목표는 1개 씬, 간단 UI, 3-5일 생존 검증이다.
+   - 실패 조건은 식량 부족 또는 안전 붕괴다.
+   - 3D 마을, 건물/애니메이션, 물/전력/의약품, 장기 캠페인, 스토리 이벤트는 first playable 범위에서 제외한다.
+
 ## 문서 역할 분리
 
 - `README.md`: 사람용 프로젝트 소개, 실행 방법, 현재 상태.
@@ -120,14 +129,14 @@
 7. 첫 custom skill 후보 결정. 상태: AI gap review 이후 확정.
 8. 첫 hook dry-run/warn 기준 확정. 상태: smoke 이후 적용 범위 확정.
 9. Unity MCP 사용 규칙 확정. 상태: Unity 환경 확인 후 도구와 범위 확정.
-10. first playable 범위와 완료 기준 문서 생성.
+10. first playable 범위와 완료 기준 문서 생성. 상태: 목표 채택, 문서화 필요.
 
 ## 가까운 진행 단계
 
 1. AI gap review를 진행하고 첫 custom skill을 고른다.
 2. 첫 hook dry-run/warn smoke test를 설계한다.
 3. Unity MCP 사용 규칙을 정한다.
-4. first playable 범위와 완료 기준을 정한다.
+4. first playable 범위와 완료 기준을 문서화한다.
 5. 그 다음 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
