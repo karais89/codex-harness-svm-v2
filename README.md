@@ -14,6 +14,7 @@ Safe Village Micro는 작은 Unity first playable을 만들면서, SVM에 맞는
 - custom skill과 hooks는 first playable 이후 gap review와 smoke test에서 적용 범위를 정한다.
 - Unity MCP는 `IvanMurzak/Unity-MCP` 설치와 smoke gate를 완료했다.
 - first playable 범위와 완료 기준은 `docs/first-playable.md`에 정리했다.
+- first playable 구현 방식은 순수 C# domain first, Unity UI thin adapter로 확정했다.
 
 ## 주요 문서
 
@@ -32,5 +33,5 @@ Safe Village Micro는 작은 Unity first playable을 만들면서, SVM에 맞는
 
 ## 다음 단계
 
-1. first playable 구현 방식을 정한다.
+1. first playable ExecPlan 작성 여부와 issue 분해 방식을 정한다.
 2. 그 다음 Unity 구현을 시작한다.

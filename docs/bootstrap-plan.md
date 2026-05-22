@@ -101,6 +101,9 @@
    - 실패 조건은 식량 부족 또는 벽 붕괴다.
    - Runtime UI는 Unity UI와 TextMeshPro를 사용하고, 기본 폰트 후보는 Pretendard다.
    - Editor tool 작업이 필요하면 UI Toolkit을 우선 사용한다.
+   - 구현 방식은 순수 C# domain을 먼저 만들고 Unity UI를 얇게 붙이는 방식으로 확정한다.
+   - 하루 루프, 자원 상태, 주민 배치, 낮 결과, 밤 판정, 성공/실패 조건은 domain에서 계산한다.
+   - Unity UI는 상태 표시, 입력 전달, 결과 로그 표시 adapter로 제한한다.
    - 3D 마을, 건물/애니메이션, 물/전력/의약품, 장기 캠페인, 스토리 이벤트는 first playable 범위에서 제외한다.
 
 ## 문서 역할 분리
@@ -142,10 +145,11 @@
 9. Unity MCP 사용 규칙 확정. 상태: `IvanMurzak/Unity-MCP` 설치와 smoke gate 완료.
 10. first playable 범위와 완료 기준 문서 생성. 상태: 완료.
 11. Matt skills 실제 setup 완료. 상태: 완료.
+12. first playable 구현 방식 확정. 상태: 순수 C# domain first, Unity UI thin adapter.
 
 ## 가까운 진행 단계
 
-1. first playable 구현 방식을 정한다.
+1. first playable ExecPlan 작성 여부와 issue 분해 방식을 정한다.
 2. 그 다음 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
@@ -186,11 +190,12 @@ SVM 반영 판단:
 - `gameobject-create`로 `MCP_Smoke_Test_Cube`를 만들고, `gameobject-find`와 `scene-get-data`로 확인한 뒤, `gameobject-destroy`로 제거했다.
 - `screenshot-scene-view`는 320x180 PNG 응답을 반환했다.
 - 이전 연결 실패 로그를 `console-clear-logs`로 비운 뒤 재조회한 `console-get-logs` 결과는 빈 배열이었다.
-- 현재 global `unity-mcp-cli`는 0.66.0이라 0.73.0 update warning을 출력한다. smoke 자체는 통과했지만, 반복 사용 전 CLI 버전을 package와 맞추는 것을 검토한다.
+- global `unity-mcp-cli`는 package와 같은 0.73.0으로 맞췄다.
 
 ## 현재 상태
 
 - final-selection tag 이후 Prompts Lab raw files는 제거했다.
 - 현재 전환 작업은 이 문서에서 이어간다.
 - Matt skills setup과 Unity MCP smoke gate는 완료됐다.
+- first playable 구현 방식은 순수 C# domain first, Unity UI thin adapter로 확정했다.
 - 이 결정들로부터 시작된 Unity gameplay 구현은 아직 없다.

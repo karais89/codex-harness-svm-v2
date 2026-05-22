@@ -40,6 +40,14 @@ DayStart
 - `Guard`: 밤 위험 피해를 줄인다.
 - `Repair`: Wall을 회복한다.
 
+## 구현 방식
+
+- first playable은 순수 C# domain을 먼저 만들고 Unity UI를 얇게 붙이는 방식으로 구현한다.
+- Domain은 하루 루프, 자원 상태, 주민 배치, 낮 결과, 밤 판정, 성공/실패 조건을 계산하는 일반 C# 코드다.
+- Unity UI는 현재 상태를 보여주고 플레이어 입력을 domain에 전달하며 결과 로그를 표시하는 adapter 역할만 한다.
+- MonoBehaviour, Canvas, TextMeshPro 컴포넌트 안에 gameplay rule을 직접 넣지 않는다.
+- Domain은 가능하면 Unity Play Mode 없이도 검증할 수 있게 유지한다.
+
 ## UI 기준
 
 - Runtime UI는 Unity UI와 TextMeshPro를 사용한다.
@@ -83,11 +91,12 @@ first playable은 다음을 만족하면 완료로 본다.
 
 ## 검증 방식
 
+- Domain rule은 Edit Mode test 또는 동등한 빠른 검증으로 먼저 확인한다.
 - Unity Play Mode에서 수동으로 하루 루프를 끝까지 진행한다.
 - 서로 다른 배치 선택을 최소 2번 확인한다.
 - 성공 경로와 실패 경로를 각각 최소 1번 확인한다.
 - Console error 여부를 확인한다.
-- `IvanMurzak/Unity-MCP`가 별도 smoke gate를 통과한 경우에만 scene 상태, UI 배치, Console log, screenshot 확인에 사용한다.
+- `IvanMurzak/Unity-MCP`는 scene 상태, UI 배치, Console log, screenshot 확인에 사용할 수 있다.
 
 ## 아직 정하지 않은 것
 

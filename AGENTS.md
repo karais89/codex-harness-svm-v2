@@ -27,6 +27,11 @@ When writing complex features or significant refactors, use an ExecPlan (as desc
 - Scene, prefab, UI, asset, ProjectSettings 변경은 MCP tool output, Console log, screenshot, Play Mode 중 적절한 증거로 검증한다.
 - Gameplay rule과 핵심 상태 전이는 C# 코드와 문서 기준으로 판단한다.
 
+## Gameplay Implementation
+
+- Safe Village Micro first playable은 순수 C# domain first, Unity UI thin adapter 방식으로 구현한다.
+- 하루 루프와 자원/주민/판정 규칙은 MonoBehaviour나 UI 컴포넌트가 아니라 domain 코드에 둔다.
+
 ## AI Mistake Guardrails
 
 재발하면 안 되는 AI 실수 guardrail은 `docs/agents/ai-mistakes.md`를 따른다.
