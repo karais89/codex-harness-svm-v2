@@ -21,6 +21,20 @@ When writing complex features or significant refactors, use an ExecPlan (as desc
 - Matt skills 설정이 완료된 뒤에는 PRD, issues, triage, domain 규칙을 `docs/agents/*.md`에서 확인한다.
 - GitHub Issues를 1순위 issue tracker 후보로 보고, local markdown은 fallback으로만 본다.
 
+## Agent skills
+
+### Issue tracker
+
+이 repo의 issues와 PRD는 GitHub Issues에서 관리한다. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+기본 5개 triage label vocabulary를 그대로 사용한다. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout을 사용한다. See `docs/agents/domain.md`.
+
 ## Commit Policy
 
 작업 완료 후 커밋 기준은 `docs/agents/commit-policy.md`를 따른다.
