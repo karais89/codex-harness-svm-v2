@@ -12,7 +12,7 @@ Safe Village Micro는 작은 Unity first playable을 만들면서, SVM에 맞는
 - root `AGENTS.md`와 `.agent/PLANS.md`를 준비했다.
 - Matt skills는 설치와 setup을 완료했고, GitHub Issues 기반 workflow를 사용한다.
 - custom skill과 hooks는 first playable 이후 gap review와 smoke test에서 적용 범위를 정한다.
-- Unity MCP는 `IvanMurzak/Unity-MCP`를 후보로 두되, smoke gate 통과 전에는 검증 완료로 보지 않는다.
+- Unity MCP는 `IvanMurzak/Unity-MCP` 설치와 smoke gate를 완료했다.
 - first playable 범위와 완료 기준은 `docs/first-playable.md`에 정리했다.
 
 ## 주요 문서
@@ -32,6 +32,5 @@ Safe Village Micro는 작은 Unity first playable을 만들면서, SVM에 맞는
 
 ## 다음 단계
 
-1. `IvanMurzak/Unity-MCP` smoke gate를 진행한다.
-2. first playable 구현 방식을 정한다.
-3. 그 다음 Unity 구현을 시작한다.
+1. first playable 구현 방식을 정한다.
+2. 그 다음 Unity 구현을 시작한다.

@@ -38,6 +38,9 @@ sysinfo.txt
 *.dylib
 *.bundle
 
+# Unity-MCP installs NuGet DLLs under Assets/Plugins; these are project assets.
+!Assets/Plugins/NuGet/*.dll
+
 # Crashlytics generated file
 crashlytics-build.properties
 CrashlyticsGeneratedFile.androidmanifest

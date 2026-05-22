@@ -21,6 +21,12 @@ When writing complex features or significant refactors, use an ExecPlan (as desc
 - Matt skills 설정이 완료된 뒤에는 PRD, issues, triage, domain 규칙을 `docs/agents/*.md`에서 확인한다.
 - GitHub Issues를 1순위 issue tracker 후보로 보고, local markdown은 fallback으로만 본다.
 
+## Unity MCP
+
+- Unity Editor 자동화에는 smoke gate를 통과한 `IvanMurzak/Unity-MCP`를 사용할 수 있다.
+- Scene, prefab, UI, asset, ProjectSettings 변경은 MCP tool output, Console log, screenshot, Play Mode 중 적절한 증거로 검증한다.
+- Gameplay rule과 핵심 상태 전이는 C# 코드와 문서 기준으로 판단한다.
+
 ## AI Mistake Guardrails
 
 재발하면 안 되는 AI 실수 guardrail은 `docs/agents/ai-mistakes.md`를 따른다.

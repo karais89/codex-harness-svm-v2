@@ -54,14 +54,14 @@
    - 후속 후보는 completion verification, permission/escalation guard, decision capture다.
 
 6. MCP 도입 경로는 채택한다.
-   - Unity MCP 후보는 `IvanMurzak/Unity-MCP`로 둔다. 단, 현재는 검증 완료가 아니라 smoke gate 전 후보 상태다.
-   - first playable 구현에서 MCP는 smoke gate를 통과한 경우에만 구현 보조와 검증 보조로 사용한다.
+   - Unity MCP는 `IvanMurzak/Unity-MCP`로 둔다.
+   - 2026-05-22 smoke gate를 통과했으므로 first playable 구현에서 구현 보조와 검증 보조로 사용할 수 있다.
    - Scene 상태 확인, GameObject/Component 생성, prefab 생성 또는 연결, Canvas/UI 배치, Play Mode 상태, Console log, screenshot 확인은 MCP 대상이다.
    - Gameplay rule과 핵심 상태 전이는 C# 코드와 문서 기준으로 유지한다.
    - scene, prefab, asset, ProjectSettings 변경은 diff, Console, Play Mode, screenshot 중 적절한 검증으로 확인한다.
    - `unity-mcp-cli status` 같은 상태 표시만으로는 성공으로 보지 않는다. 실제 tool call로 scene 읽기, 임시 GameObject 생성/조회/삭제, Console log 조회, screenshot 확인까지 통과해야 한다.
    - smoke 중 package version mismatch, cloud/local port 혼선, Codex session의 MCP namespace 미노출이 발생할 수 있으므로 설치 파일 diff와 실제 tool call 결과를 함께 본다.
-   - 실제 MCP 도구와 사용 범위는 Unity 환경 확인과 smoke gate 이후 확정한다.
+   - 실제 MCP 도구와 사용 범위는 smoke에서 검증한 도구를 우선 사용하고, 새 도구는 최초 사용 시 작은 smoke로 확인한다.
    - custom MCP tool은 반복 필요가 확인되기 전까지 공식 도구로 승격하지 않는다.
 
 7. plugin 제작은 보류한다.
@@ -139,15 +139,14 @@
 6. Matt skills tmp smoke 계획 확정. 상태: 완료.
 7. 첫 custom skill 후보 결정. 상태: first playable 이후 AI gap review로 이동.
 8. 첫 hook dry-run/warn 기준 확정. 상태: first playable 이후 smoke로 이동.
-9. Unity MCP 사용 규칙 확정. 상태: `IvanMurzak/Unity-MCP` 후보 채택, smoke gate 통과 전에는 검증 완료로 보지 않음.
+9. Unity MCP 사용 규칙 확정. 상태: `IvanMurzak/Unity-MCP` 설치와 smoke gate 완료.
 10. first playable 범위와 완료 기준 문서 생성. 상태: 완료.
 11. Matt skills 실제 setup 완료. 상태: 완료.
 
 ## 가까운 진행 단계
 
-1. `IvanMurzak/Unity-MCP` 설치와 smoke gate를 진행한다.
-2. first playable 구현 방식을 정한다.
-3. 그 다음 Unity 구현을 시작한다.
+1. first playable 구현 방식을 정한다.
+2. 그 다음 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
 
@@ -178,8 +177,20 @@ SVM 반영 판단:
 - SVM의 `docs/decisions/` 정책은 bootstrap/governance decision 기록용으로 별도 유지한다.
 - 같은 실수의 재발을 막기 위해 `docs/agents/ai-mistakes.md`에 guardrail 항목을 추가했다.
 
+## Unity MCP smoke 결과
+
+- Unity package `com.ivanmurzak.unity.mcp` 0.73.0을 OpenUPM registry로 설치했다.
+- repo-local Codex MCP 설정은 `.codex/config.toml`에 `http://localhost:29041`로 기록됐다.
+- Unity Editor 6000.4.6f1에서 `unity-mcp-cli status --path . --verbose`가 local MCP server 연결에 성공했다.
+- `scene-list-opened`와 `editor-application-get-state` 호출이 성공했다.
+- `gameobject-create`로 `MCP_Smoke_Test_Cube`를 만들고, `gameobject-find`와 `scene-get-data`로 확인한 뒤, `gameobject-destroy`로 제거했다.
+- `screenshot-scene-view`는 320x180 PNG 응답을 반환했다.
+- 이전 연결 실패 로그를 `console-clear-logs`로 비운 뒤 재조회한 `console-get-logs` 결과는 빈 배열이었다.
+- 현재 global `unity-mcp-cli`는 0.66.0이라 0.73.0 update warning을 출력한다. smoke 자체는 통과했지만, 반복 사용 전 CLI 버전을 package와 맞추는 것을 검토한다.
+
 ## 현재 상태
 
 - final-selection tag 이후 Prompts Lab raw files는 제거했다.
 - 현재 전환 작업은 이 문서에서 이어간다.
+- Matt skills setup과 Unity MCP smoke gate는 완료됐다.
 - 이 결정들로부터 시작된 Unity gameplay 구현은 아직 없다.
