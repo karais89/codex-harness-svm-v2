@@ -1,0 +1,36 @@
+{
+  "schema": "learning-draft",
+  "name": "unity-mvp-workflow-draft",
+  "displayName": "Unity MVP Workflow Draft",
+  "purpose": "Group repeatable Unity MVP development guidance into one future plugin boundary.",
+  "installable": false,
+  "status": "learning draft only",
+  "components": {
+    "skills": [
+      {
+        "name": "unity-mvp-scope-review",
+        "path": "skills/unity-mvp-scope-review/SKILL.md",
+        "role": "Review whether a requested change stays inside the current MVP scope."
+      }
+    ],
+    "mcp": [
+      {
+        "name": "unity-console-mcp-placeholder",
+        "path": "mcp/unity-console-mcp-placeholder.md",
+        "role": "Describe a future read-only Unity Console MCP server connection."
+      }
+    ],
+    "docs": [
+      {
+        "path": "README.md",
+        "role": "Explain the bundle boundary and why it is not installable yet."
+      }
+    ]
+  },
+  "blockedUntil": [
+    "The skill is reused successfully across multiple real MVP development tasks.",
+    "The MCP server is registered and validated through an actual Codex MCP config experiment.",
+    "The current Codex plugin manifest schema is verified with official tooling or documentation.",
+    "The package boundary proves useful across more than one Unity MVP project."
+  ]
+}
