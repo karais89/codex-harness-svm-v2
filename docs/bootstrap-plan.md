@@ -111,7 +111,7 @@
 
 ## 부트스트랩 완료 조건
 
-1. `README.md` 생성 또는 정리 완료.
+1. `README.md` 생성 또는 정리 완료. 상태: 완료.
 2. root `AGENTS.md` 생성 완료. 상태: 완료.
 3. OpenAI 원천 기준의 `.agent/PLANS.md` 생성 완료. 상태: 완료.
 4. 병렬 Codex 조정 방식 확정. 상태: `docs/current.md` 폐기, GitHub Issues/branch/worktree 중심으로 조정.
@@ -124,12 +124,11 @@
 
 ## 가까운 진행 단계
 
-1. `README.md` 역할과 최소 내용을 결정한다.
-2. AI gap review를 진행하고 첫 custom skill을 고른다.
-3. 첫 hook dry-run/warn smoke test를 설계한다.
-4. Unity MCP 사용 규칙을 정한다.
-5. first playable 범위와 완료 기준을 정한다.
-6. 그 다음 Unity 구현을 시작한다.
+1. AI gap review를 진행하고 첫 custom skill을 고른다.
+2. 첫 hook dry-run/warn smoke test를 설계한다.
+3. Unity MCP 사용 규칙을 정한다.
+4. first playable 범위와 완료 기준을 정한다.
+5. 그 다음 Unity 구현을 시작한다.
 
 ## Matt skills smoke 결과
 
