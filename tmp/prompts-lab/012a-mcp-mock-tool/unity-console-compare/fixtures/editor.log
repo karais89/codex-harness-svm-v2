@@ -1,0 +1,10 @@
+Mono path[0] = '/Applications/Unity/Hub/Editor/6000.4.6f1/Unity.app/Contents/Managed'
+Initialize engine version: 6000.4.6f1
+Loading scene Assets/Scenes/SampleScene.unity
+Some normal Unity log line
+Warning: Missing sprite reference on HudIcon
+NullReferenceException: Object reference not set to an instance of an object
+PlayerController.Update () (at Assets/Scripts/PlayerController.cs:42)
+Error: Failed to load test asset Assets/Test/Missing.asset
+Entering Play Mode
+Exiting Play Mode
