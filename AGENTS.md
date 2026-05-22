@@ -21,6 +21,12 @@ When writing complex features or significant refactors, use an ExecPlan (as desc
 - Matt skills 설정이 완료된 뒤에는 PRD, issues, triage, domain 규칙을 `docs/agents/*.md`에서 확인한다.
 - GitHub Issues를 1순위 issue tracker 후보로 보고, local markdown은 fallback으로만 본다.
 
+## Documentation Policy
+
+원천 문서, 설치된 skill, setup 생성 문서의 의미와 경로는 `docs/agents/documentation-policy.md`를 따른다.
+
+재발하면 안 되는 AI 실수 guardrail은 `docs/agents/ai-mistakes.md`를 따른다.
+
 ## Agent skills
 
 ### Issue tracker

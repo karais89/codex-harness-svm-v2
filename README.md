@@ -24,6 +24,8 @@ Safe Village Micro는 작은 Unity first playable을 만들면서, SVM에 맞는
 - `docs/bootstrap-plan.md`: 현재 부트스트랩 전환 계획
 - `docs/agents/commit-policy.md`: 작업 완료 후 커밋 기준
 - `docs/agents/decision-policy.md`: 장기 결정 기록 기준
+- `docs/agents/documentation-policy.md`: 원천 문서와 setup 생성 문서 보존 기준
+- `docs/agents/ai-mistakes.md`: 재발하면 안 되는 AI 실수 guardrail
 - `docs/agents/issue-tracker.md`: Matt skills가 사용할 GitHub Issues 기준
 - `docs/agents/domain.md`: Matt skills가 읽을 domain 문서 기준
 - `docs/first-playable.md`: Safe Village Micro first playable 범위와 완료 기준
