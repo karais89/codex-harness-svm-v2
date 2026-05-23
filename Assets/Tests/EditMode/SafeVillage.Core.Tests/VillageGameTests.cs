@@ -27,5 +27,44 @@ namespace SafeVillage.Core.Tests
 
             Assert.That(game.State, Is.EqualTo(VillageState.Initial));
         }
+
+        [Test]
+        public void RejectsAssignmentsWithNegativeCountsOrWrongTotal()
+        {
+            var game = new VillageGame();
+
+            Assert.That(game.CanResolve(new VillageAssignment(-1, 2, 2), out _), Is.False);
+            Assert.That(game.CanResolve(new VillageAssignment(1, 1, 0), out _), Is.False);
+        }
+
+        [Test]
+        public void ResolveDayRejectsInvalidAssignmentWithoutChangingState()
+        {
+            var game = new VillageGame();
+
+            Assert.Throws<System.InvalidOperationException>(() => game.ResolveDay(new VillageAssignment(1, 1, 0)));
+            Assert.That(game.State, Is.EqualTo(VillageState.Initial));
+            Assert.That(game.LastReport, Is.Null);
+        }
+
+        [Test]
+        public void ResolveDayAppliesAssignmentAndReturnsReport()
+        {
+            var game = new VillageGame();
+
+            var report = game.ResolveDay(new VillageAssignment(2, 1, 0));
+
+            Assert.That(game.State.Day, Is.EqualTo(2));
+            Assert.That(game.State.Food, Is.EqualTo(4));
+            Assert.That(game.State.Wall, Is.EqualTo(3));
+            Assert.That(game.State.Outcome, Is.EqualTo(VillageOutcome.InProgress));
+            Assert.That(report.Day, Is.EqualTo(1));
+            Assert.That(report.FoodGained, Is.EqualTo(4));
+            Assert.That(report.Threat, Is.EqualTo(1));
+            Assert.That(report.GuardReduction, Is.EqualTo(1));
+            Assert.That(report.Damage, Is.EqualTo(0));
+            Assert.That(report.FoodConsumed, Is.EqualTo(3));
+            Assert.That(game.LastReport, Is.SameAs(report));
+        }
     }
 }

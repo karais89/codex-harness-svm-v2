@@ -18,7 +18,7 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 - [x] (2026-05-22T23:25:57Z) GitHub Issues #1-#5를 dependency order로 발행하고 이 ExecPlan의 work queue로 연결했다.
 - [x] (2026-05-22T23:41:28Z) Issue #2 범위로 `SafeVillage.Core` 초기 상태 domain model과 Edit Mode tests를 추가하고 `SafeVillage.Core.Tests` 2개를 통과시켰다.
 - [x] (2026-05-22T23:41:28Z) Issue #2 범위로 `SafeVillage.Runtime` presenter와 `Assets/Scenes/SafeVillageMicro.unity` scene을 추가하고 Play Mode에서 초기 Day/Food/Wall/Villagers/Outcome text 표시를 확인했다.
-- [ ] Issue #3 범위에서 assignment validation, one-day resolution, result log, invalid assignment UI를 추가한다.
+- [x] (2026-05-23T00:25:39Z) Issue #3 범위에서 assignment validation, one-day resolution, result log, invalid assignment UI를 추가하고 Edit Mode / Play Mode MCP 검증을 통과시켰다.
 - [ ] 성공 경로와 실패 경로를 Play Mode에서 수동 검증하고, Unity MCP로 Console log, screenshot, scene 상태를 확인한다.
 - [ ] 검증 결과를 이 ExecPlan의 `Outcomes & Retrospective`와 `Artifacts and Notes`에 기록한 뒤 커밋한다.
 
@@ -60,9 +60,11 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 ## Outcomes & Retrospective
 
-Issue #2는 완료됐다. 현재 Play Mode에서 `SafeVillageMicro` scene을 열면 `SafeVillageGamePresenter`가 `VillageGame`의 초기 상태를 읽어 `Safe Village Micro`, `Day: 1`, `Food: 3`, `Wall: 3/5`, `Villagers: 3`, `Outcome: InProgress`를 표시한다. `Resolve Day`, assignment controls, day report log는 아직 없으며 Issue #3 범위로 남긴다.
+Issue #2 완료 시점에는 Play Mode에서 `SafeVillageMicro` scene을 열면 `SafeVillageGamePresenter`가 `VillageGame`의 초기 상태를 읽어 `Safe Village Micro`, `Day: 1`, `Food: 3`, `Wall: 3/5`, `Villagers: 3`, `Outcome: InProgress`를 표시했다. `Resolve Day`, assignment controls, day report log는 아직 없었으며 Issue #3 범위로 남겼다.
 
 검증 중 처음 `tests-run`은 dirty untitled scene 때문에 실패했다. 이 실패는 gameplay code 문제가 아니라 Unity test runner precondition 문제였고, 새 scene을 저장한 뒤 재실행해 `SafeVillage.Core.Tests` 2개가 통과했다. 최종 Console 검증 전 Console log를 clear한 뒤 Error와 Exception이 비어 있음을 다시 확인했다.
+
+Issue #3는 완료됐다. `VillageGame`은 이제 `VillageAssignment`를 검증하고, `ResolveDay`로 하루의 Forage/Guard/Repair 결과를 계산하며, `DayReport`로 Food gain, Wall repair, Threat, Guard reduction, Wall damage, Food consumed를 반환한다. Runtime presenter는 Play Mode에서 Forage/Guard/Repair +/- 버튼, `Resolve Day`, `Restart`, validation message, day report log를 생성한다. MCP Play Mode probe에서 invalid assignment는 Day 1 상태를 유지했고, `Forage=2, Guard=1, Repair=0`은 Day 2 `Food=4`, `Wall=3/5`와 하루 report log를 표시했다.
 
 ## Context and Orientation
 
@@ -274,7 +276,7 @@ Pretendard font는 이번 plan에 포함하지 않는다. 사용자가 font asse
 현재까지 확인한 기준 정보는 다음과 같다.
 
     Unity Editor: 6000.4.6f1
-    Current gameplay code: none
+    Initial gameplay code before first-playable work: none
     Existing C# file: Assets/Editor/PromptsLab/SvmConsoleLogBridge.cs
     Unity MCP package: com.ivanmurzak.unity.mcp 0.73.0
     Runtime UI packages available: com.unity.ugui, Unity.TextMeshPro
@@ -327,6 +329,37 @@ Issue #2 검증 결과는 다음과 같다.
     unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Exception","includeStackTrace":false,"lastMinutes":10}'
     result: []
 
+Issue #3 구현 산출물은 다음과 같다.
+
+    Assets/SafeVillage/Core/VillageAction.cs
+    Assets/SafeVillage/Core/VillageAssignment.cs
+    Assets/SafeVillage/Core/DayReport.cs
+    Assets/SafeVillage/Core/VillageGame.cs
+    Assets/SafeVillage/Runtime/SafeVillageGamePresenter.cs
+    Assets/Tests/EditMode/SafeVillage.Core.Tests/VillageGameTests.cs
+
+Issue #3 검증 결과는 다음과 같다.
+
+    unity-mcp-cli run-tool tests-run --input '{"testMode":"EditMode","testAssembly":"SafeVillage.Core.Tests","includePassingTests":true,"includeMessages":true}'
+    Status: Passed
+    TotalTests: 5
+    PassedTests: 5
+
+    unity-mcp-cli run-tool script-execute --input-file -
+    INVALID_STATE: Day 1, Food 3, Wall 3/5, Outcome InProgress
+    INVALID_VALIDATION: Assign exactly 3 villagers.
+    RESOLVED_STATE: Day 2, Food 4, Wall 3/5, Outcome InProgress
+    LOG: Day 1: Food +4, Wall +0, Threat 1, Guard -1, Wall damage 0, Food -3.
+
+    unity-mcp-cli run-tool screenshot-game-view --input '{}'
+    Screenshot from Game View (714x402)
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Error","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Exception","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
 ## Interfaces and Dependencies
 
 `SafeVillage.Core`는 Unity runtime assemblies를 참조하지 않는다. 이 assembly는 deterministic state transition만 제공한다. Public API는 `VillageGame`, `VillageState`, `VillageAssignment`, `DayReport`, `VillageOutcome` 중심으로 유지한다.
@@ -346,3 +379,5 @@ Issue #2 검증 결과는 다음과 같다.
 2026-05-22 / Codex: Issue #2를 실행했다. `SafeVillage.Core` 초기 상태, `SafeVillage.Core.Tests`, `SafeVillage.Runtime` presenter, `SafeVillageMicro` scene을 추가했다. Day resolution과 assignment UI는 Issue #3으로 남겼다.
 
 2026-05-23 / Codex: Issue #3 이후 domain rule 변경에서 `tdd` skill을 명시적으로 호출하고 vertical red-green-refactor cycle을 따르도록 Plan of Work, Validation, Decision Log를 갱신했다.
+
+2026-05-23 / Codex: Issue #3를 실행했다. `VillageAssignment`, `DayReport`, one-day resolution, assignment controls, validation message, day report log를 추가했고, Edit Mode tests와 Play Mode MCP probe로 valid/invalid 흐름을 확인했다.
