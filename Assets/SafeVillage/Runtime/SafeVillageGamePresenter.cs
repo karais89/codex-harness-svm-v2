@@ -101,8 +101,8 @@ namespace SafeVillage.Runtime
             logText = CreateText(
                 "DayReportLog",
                 canvasObject.transform,
-                new Vector2(48f, -332f),
-                new Vector2(1120f, 320f),
+                new Vector2(48f, -392f),
+                new Vector2(1120f, 260f),
                 21f,
                 TextAlignmentOptions.TopLeft);
         }

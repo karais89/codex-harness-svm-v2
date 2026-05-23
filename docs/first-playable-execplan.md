@@ -20,8 +20,8 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 - [x] (2026-05-22T23:41:28Z) Issue #2 범위로 `SafeVillage.Runtime` presenter와 `Assets/Scenes/SafeVillageMicro.unity` scene을 추가하고 Play Mode에서 초기 Day/Food/Wall/Villagers/Outcome text 표시를 확인했다.
 - [x] (2026-05-23T00:25:39Z) Issue #3 범위에서 assignment validation, one-day resolution, result log, invalid assignment UI를 추가하고 Edit Mode / Play Mode MCP 검증을 통과시켰다.
 - [x] (2026-05-23T00:32:47Z) Issue #4 범위에서 3일 성공 경로 domain test를 추가하고 Play Mode UI 버튼 경로로 Victory, report log 3줄, Resolve 비활성화를 확인했다.
-- [ ] Issue #5 범위에서 wall failure와 food failure 경로를 Play Mode에서 검증하고, Unity MCP로 Console log, screenshot, scene 상태를 확인한다.
-- [ ] first playable 전체 검증 결과를 이 ExecPlan의 `Outcomes & Retrospective`와 `Artifacts and Notes`에 기록한 뒤 최종 커밋한다.
+- [x] (2026-05-23T00:38:55Z) Issue #5 범위에서 WallCollapsed/FoodDepleted domain tests, Play Mode success/failure/restart probe, Console log, screenshot, scene 상태를 확인했다.
+- [x] (2026-05-23T00:38:55Z) first playable 전체 검증 결과를 이 ExecPlan의 `Outcomes & Retrospective`와 `Artifacts and Notes`에 기록했다.
 
 ## Surprises & Discoveries
 
@@ -35,6 +35,8 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
   Evidence: 첫 `tests-run` 시도는 unsaved `(untitled)` scene 때문에 실패했다. `Assets/Scenes/SafeVillageMicro.unity`를 만들고 저장한 뒤 같은 test assembly가 Passed 상태가 됐다.
 - Observation: Issue #4의 domain behavior는 Issue #3 구현에 이미 들어와 있었고, #4 작업에서는 acceptance test와 Play Mode 증거로 고정했다.
   Evidence: `ThreeDaySuccessPathEndsInVictoryAndBlocksFurtherResolution` 추가 직후 `SafeVillage.Core.Tests`가 6/6 passed였다.
+- Observation: 기존 report log RectTransform은 `ResolveButton`/`RestartButton`과 세로 영역이 가까워 긴 report line이 버튼 영역과 겹칠 수 있었다.
+  Evidence: Issue #5 layout probe 전 `DayReportLog`가 `y=-332`, height `320`이었고 buttons는 `y=-322`, height `44`였다. `DayReportLog`를 `y=-392`, height `260`으로 내려 최종 probe에서 `LogTop=-392`, `ResolveBottom=-366`, `RestartBottom=-366`으로 분리했다.
 ## Decision Log
 
 - Decision: active ExecPlan 파일은 `docs/first-playable-execplan.md`에 둔다.
@@ -70,6 +72,10 @@ Issue #2 완료 시점에는 Play Mode에서 `SafeVillageMicro` scene을 열면 
 Issue #3는 완료됐다. `VillageGame`은 이제 `VillageAssignment`를 검증하고, `ResolveDay`로 하루의 Forage/Guard/Repair 결과를 계산하며, `DayReport`로 Food gain, Wall repair, Threat, Guard reduction, Wall damage, Food consumed를 반환한다. Runtime presenter는 Play Mode에서 Forage/Guard/Repair +/- 버튼, `Resolve Day`, `Restart`, validation message, day report log를 생성한다. MCP Play Mode probe에서 invalid assignment는 Day 1 상태를 유지했고, `Forage=2, Guard=1, Repair=0`은 Day 2 `Food=4`, `Wall=3/5`와 하루 report log를 표시했다.
 
 Issue #4는 완료됐다. `VillageGame` success path test는 Day 1 `Forage=2, Guard=1, Repair=0`, Day 2 `Forage=1, Guard=1, Repair=1`, Day 3 `Forage=0, Guard=3, Repair=0`을 순서대로 해결해 `Food=0`, `Wall=3`, `Outcome=Victory`를 확인한다. Play Mode probe는 `Restart` 후 UI 버튼만 호출해 같은 성공 경로를 재현했고, 화면에 `Day: 3`, `Food: 0`, `Wall: 3/5`, `Outcome: Victory`, report log 3줄이 표시되며 `Resolve Day`가 `interactable=False`임을 확인했다. Console Error와 Exception은 clear 후 재현 기준으로 빈 배열이었다.
+
+Issue #5는 완료됐다. Domain tests는 `Forage=3, Guard=0, Repair=0` 반복 시 Day 2에 `Food=9`, `Wall=0`, `Outcome=WallCollapsed`가 되고, `Forage=0, Guard=3, Repair=0` 반복 시 Day 2에 `Food=-3`, `Wall=3`, `Outcome=FoodDepleted`가 됨을 확인한다. 두 failure 모두 terminal 이후 `CanResolve`와 `ResolveDay`가 추가 진행을 막는다.
+
+Play Mode 최종 probe는 UI 버튼만 사용해 success path, wall failure path, restart flow, food failure path를 한 번에 재현했다. Success는 `Day: 3`, `Food: 0`, `Wall: 3/5`, `Outcome: Victory`, log 3줄, `Resolve=False`였다. Wall failure는 `Day: 2`, `Food: 9`, `Wall: 0/5`, `Outcome: WallCollapsed`, log 2줄, `Resolve=False`였다. Restart는 `Day: 1`, `Food: 3`, `Wall: 3/5`, `Villagers: 3`, `Outcome: InProgress`, `Resolve=True`였다. Food failure는 `Day: 2`, `Food: -3`, `Wall: 3/5`, `Outcome: FoodDepleted`, log 2줄, `Resolve=False`였다. 최종 `screenshot-game-view`는 FoodDepleted 화면에서 key text가 보이는 Game View 714x402 이미지를 반환했고, layout probe는 report log가 buttons 아래에 분리되어 있음을 확인했다. Console Error와 Exception은 최종 verification run 기준으로 빈 배열이었다.
 
 ## Context and Orientation
 
@@ -396,6 +402,37 @@ Issue #4 검증 결과는 다음과 같다.
     unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Exception","includeStackTrace":false,"lastMinutes":10}'
     result: []
 
+Issue #5 구현 산출물은 다음과 같다.
+
+    Assets/SafeVillage/Runtime/SafeVillageGamePresenter.cs
+    Assets/Tests/EditMode/SafeVillage.Core.Tests/VillageGameTests.cs
+
+Issue #5 검증 결과는 다음과 같다.
+
+    unity-mcp-cli run-tool tests-run --input '{"testMode":"EditMode","testAssembly":"SafeVillage.Core.Tests","includePassingTests":true,"includeMessages":true}'
+    Status: Passed
+    TotalTests: 8
+    PassedTests: 8
+
+    unity-mcp-cli run-tool script-execute --input '{...SafeVillageIssue5FinalProbe...}'
+    SUCCESS: Day 3, Food 0, Wall 3/5, Outcome Victory, LogLines 3, Resolve False
+    WALL: Day 2, Food 9, Wall 0/5, Outcome WallCollapsed, LogLines 2, Resolve False
+    RESTART: Day 1, Food 3, Wall 3/5, Villagers 3, Outcome InProgress, Resolve True
+    FOOD: Day 2, Food -3, Wall 3/5, Outcome FoodDepleted, LogLines 2, Resolve False
+    LAYOUT: LogTop -392, LogBottom -652, ResolveBottom -366, RestartBottom -366
+
+    unity-mcp-cli run-tool screenshot-game-view --input '{}'
+    Screenshot from Game View (714x402)
+
+    unity-mcp-cli run-tool scene-list-opened --input '{}'
+    SafeVillageMicro: loaded true, dirty false, path Assets/Scenes/SafeVillageMicro.unity
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Error","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Exception","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
 ## Interfaces and Dependencies
 
 `SafeVillage.Core`는 Unity runtime assemblies를 참조하지 않는다. 이 assembly는 deterministic state transition만 제공한다. Public API는 `VillageGame`, `VillageState`, `VillageAssignment`, `DayReport`, `VillageOutcome` 중심으로 유지한다.
@@ -419,3 +456,5 @@ Issue #4 검증 결과는 다음과 같다.
 2026-05-23 / Codex: Issue #3를 실행했다. `VillageAssignment`, `DayReport`, one-day resolution, assignment controls, validation message, day report log를 추가했고, Edit Mode tests와 Play Mode MCP probe로 valid/invalid 흐름을 확인했다.
 
 2026-05-23 / Codex: Issue #4를 실행했다. 3일 성공 경로 test를 추가했고, Play Mode UI 버튼 경로로 Victory, report log 3줄, terminal 이후 Resolve 비활성화, Console Error/Exception 0건을 확인했다.
+
+2026-05-23 / Codex: Issue #5를 실행했다. WallCollapsed/FoodDepleted tests를 추가했고, report log를 buttons 아래로 내려 layout overlap risk를 줄였다. Play Mode UI 버튼 경로로 success, wall failure, restart, food failure를 검증하고 Console Error/Exception 0건과 Game View screenshot evidence를 확인했다.

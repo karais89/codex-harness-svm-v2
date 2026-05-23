@@ -87,5 +87,47 @@ namespace SafeVillage.Core.Tests
             Assert.That(reason, Is.EqualTo("Game is already finished."));
             Assert.Throws<System.InvalidOperationException>(() => game.ResolveDay(new VillageAssignment(1, 1, 1)));
         }
+
+        [Test]
+        public void RepeatingAllForageEndsInWallCollapsedAndBlocksFurtherResolution()
+        {
+            var game = new VillageGame();
+
+            game.ResolveDay(new VillageAssignment(3, 0, 0));
+            var finalReport = game.ResolveDay(new VillageAssignment(3, 0, 0));
+
+            Assert.That(game.State.Day, Is.EqualTo(2));
+            Assert.That(game.State.Food, Is.EqualTo(9));
+            Assert.That(game.State.Wall, Is.EqualTo(0));
+            Assert.That(game.State.Outcome, Is.EqualTo(VillageOutcome.WallCollapsed));
+            Assert.That(game.State.IsTerminal, Is.True);
+            Assert.That(finalReport.Day, Is.EqualTo(2));
+            Assert.That(finalReport.Damage, Is.EqualTo(2));
+            Assert.That(finalReport.ResultingState, Is.EqualTo(game.State));
+            Assert.That(game.CanResolve(new VillageAssignment(1, 1, 1), out var reason), Is.False);
+            Assert.That(reason, Is.EqualTo("Game is already finished."));
+            Assert.Throws<System.InvalidOperationException>(() => game.ResolveDay(new VillageAssignment(1, 1, 1)));
+        }
+
+        [Test]
+        public void RepeatingAllGuardEndsInFoodDepletedAndBlocksFurtherResolution()
+        {
+            var game = new VillageGame();
+
+            game.ResolveDay(new VillageAssignment(0, 3, 0));
+            var finalReport = game.ResolveDay(new VillageAssignment(0, 3, 0));
+
+            Assert.That(game.State.Day, Is.EqualTo(2));
+            Assert.That(game.State.Food, Is.EqualTo(-3));
+            Assert.That(game.State.Wall, Is.EqualTo(3));
+            Assert.That(game.State.Outcome, Is.EqualTo(VillageOutcome.FoodDepleted));
+            Assert.That(game.State.IsTerminal, Is.True);
+            Assert.That(finalReport.Day, Is.EqualTo(2));
+            Assert.That(finalReport.FoodConsumed, Is.EqualTo(3));
+            Assert.That(finalReport.ResultingState, Is.EqualTo(game.State));
+            Assert.That(game.CanResolve(new VillageAssignment(1, 1, 1), out var reason), Is.False);
+            Assert.That(reason, Is.EqualTo("Game is already finished."));
+            Assert.Throws<System.InvalidOperationException>(() => game.ResolveDay(new VillageAssignment(1, 1, 1)));
+        }
     }
 }
