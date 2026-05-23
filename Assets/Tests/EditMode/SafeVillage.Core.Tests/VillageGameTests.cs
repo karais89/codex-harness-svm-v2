@@ -66,5 +66,26 @@ namespace SafeVillage.Core.Tests
             Assert.That(report.FoodConsumed, Is.EqualTo(3));
             Assert.That(game.LastReport, Is.SameAs(report));
         }
+
+        [Test]
+        public void ThreeDaySuccessPathEndsInVictoryAndBlocksFurtherResolution()
+        {
+            var game = new VillageGame();
+
+            game.ResolveDay(new VillageAssignment(2, 1, 0));
+            game.ResolveDay(new VillageAssignment(1, 1, 1));
+            var finalReport = game.ResolveDay(new VillageAssignment(0, 3, 0));
+
+            Assert.That(game.State.Day, Is.EqualTo(3));
+            Assert.That(game.State.Food, Is.EqualTo(0));
+            Assert.That(game.State.Wall, Is.EqualTo(3));
+            Assert.That(game.State.Outcome, Is.EqualTo(VillageOutcome.Victory));
+            Assert.That(game.State.IsTerminal, Is.True);
+            Assert.That(finalReport.Day, Is.EqualTo(3));
+            Assert.That(finalReport.ResultingState, Is.EqualTo(game.State));
+            Assert.That(game.CanResolve(new VillageAssignment(1, 1, 1), out var reason), Is.False);
+            Assert.That(reason, Is.EqualTo("Game is already finished."));
+            Assert.Throws<System.InvalidOperationException>(() => game.ResolveDay(new VillageAssignment(1, 1, 1)));
+        }
     }
 }
