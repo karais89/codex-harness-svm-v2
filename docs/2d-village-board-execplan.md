@@ -14,7 +14,8 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 - [x] (2026-05-23T01:10:00Z) `.agent/PLANS.md`, `/tdd` skill, `docs/2d-village-board-playable.md`, GitHub Issues #6-#9, 현재 Runtime presenter와 tests 구조를 확인했다.
 - [x] (2026-05-23T01:10:00Z) 이 Delivery ExecPlan을 `docs/2d-village-board-execplan.md`에 작성했다.
-- [ ] Issue #7 범위로 `docs/references/2d-village-board-concept.png` reference 이미지를 만들고 사람의 방향 확인을 받는다.
+- [x] (2026-05-23) Issue #7 범위로 `docs/references/2d-village-board-concept.png` reference 이미지를 만들었다. Runtime `Assets/` 파일은 변경하지 않았다.
+- [x] (2026-05-23) 사람이 reference 이미지의 시각 방향이 다음 구현으로 넘어갈 만큼 적절하다고 확인했다. #7을 evidence와 함께 닫는다.
 - [ ] Issue #8 범위로 Runtime UI를 고정 한 화면 2D 마을 보드 구조로 교체하고 Play Mode test와 screenshot으로 검증한다.
 - [ ] Issue #9 범위로 클릭 선택 배치와 간단한 보드 피드백 애니메이션을 구현하고 Play Mode test, actual pointer input, screenshot으로 검증한다.
 - [ ] Issues #7, #8, #9를 각각 evidence와 함께 닫고, tracking issue #6에 최종 결과를 보고한다.
@@ -50,7 +51,9 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 ## Outcomes & Retrospective
 
-아직 구현은 시작하지 않았다. 이 문서는 #7-#9를 진행할 때 각 issue의 검증 evidence와 결정 변경 사항을 누적하는 living document다.
+Runtime 구현은 아직 시작하지 않았다. 이 문서는 #7-#9를 진행할 때 각 issue의 검증 evidence와 결정 변경 사항을 누적하는 living document다.
+
+Issue #7 reference 이미지는 `docs/references/2d-village-board-concept.png`에 생성했다. 이 이미지는 runtime asset이 아니라 HUD, 작업 장소 3곳, 주민 토큰 3개, 벽, 마을 중심부, Resolve/Restart 조작 배치의 방향을 확인하기 위한 layout/mood reference다. 사용자가 시각 방향이 다음 구현으로 넘어갈 만큼 적절하다고 확인했다.
 
 Issue #7 완료 후에는 컨셉 reference가 실제 Unity runtime asset이 아니라 보드 레이아웃과 분위기 기준으로 충분했는지 기록한다. Issue #8 완료 후에는 기존 폼형 UI가 고정 한 화면 마을 보드로 바뀌었는지 screenshot과 Console 결과를 기록한다. Issue #9 완료 후에는 실제 클릭 입력으로 주민 배치와 하루 해결이 동작했는지, 간단한 피드백 애니메이션이 게임처럼 읽히는지 기록한다.
 
