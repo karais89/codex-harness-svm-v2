@@ -33,3 +33,11 @@ Mistake: Unity UI 검증에서 `Button.onClick.Invoke()`를 실제 버튼 클릭
 Impact: Play Mode probe는 통과했지만 사용자가 마우스로 버튼을 누르면 입력 이벤트가 전달되지 않아 playable이 실제로 조작되지 않았다.
 
 Guardrail: Unity UI 클릭 acceptance는 `EventSystem`/input module 존재와 실제 pointer event 또는 사람의 수동 클릭으로 검증하고, `onClick.Invoke()`는 gameplay callback smoke로만 취급한다.
+
+### 2026-05-23 - GitHub Issues are project work documents
+
+Mistake: repo의 Language 규칙을 프로젝트 문서에는 적용했지만, 새 GitHub Issue 제목과 본문에는 적용하지 않고 영어로 작성했다.
+
+Impact: PRD와 issue queue가 repo의 한국어 작업 문서 기준에서 벗어나고, 사람용 planning 흐름이 불필요하게 이중 언어로 갈라졌다.
+
+Guardrail: PRD, ExecPlan, GitHub Issue 제목/본문/코멘트는 프로젝트 작업 문서로 보고 한국어로 작성한다. 코드 식별자, 명령어, 경로, 외부 원문 제목만 필요한 경우 영어를 유지한다.
