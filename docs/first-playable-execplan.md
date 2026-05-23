@@ -22,6 +22,7 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 - [x] (2026-05-23T00:32:47Z) Issue #4 범위에서 3일 성공 경로 domain test를 추가하고 Play Mode UI 버튼 경로로 Victory, report log 3줄, Resolve 비활성화를 확인했다.
 - [x] (2026-05-23T00:38:55Z) Issue #5 범위에서 WallCollapsed/FoodDepleted domain tests, Play Mode success/failure/restart probe, Console log, screenshot, scene 상태를 확인했다.
 - [x] (2026-05-23T00:38:55Z) first playable 전체 검증 결과를 이 ExecPlan의 `Outcomes & Retrospective`와 `Artifacts and Notes`에 기록했다.
+- [x] (2026-05-23T00:44:30Z) 실제 마우스 클릭이 안 되는 문제를 수정했다. Runtime UI가 `EventSystem`과 `InputSystemUIInputModule`을 생성하도록 하고, Input System pointer event로 `Forage +` 클릭이 `1 -> 2`로 반영됨을 확인했다.
 
 ## Surprises & Discoveries
 
@@ -37,6 +38,8 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
   Evidence: `ThreeDaySuccessPathEndsInVictoryAndBlocksFurtherResolution` 추가 직후 `SafeVillage.Core.Tests`가 6/6 passed였다.
 - Observation: 기존 report log RectTransform은 `ResolveButton`/`RestartButton`과 세로 영역이 가까워 긴 report line이 버튼 영역과 겹칠 수 있었다.
   Evidence: Issue #5 layout probe 전 `DayReportLog`가 `y=-332`, height `320`이었고 buttons는 `y=-322`, height `44`였다. `DayReportLog`를 `y=-392`, height `260`으로 내려 최종 probe에서 `LogTop=-392`, `ResolveBottom=-366`, `RestartBottom=-366`으로 분리했다.
+- Observation: 이전 Play Mode probe는 `Button.onClick.Invoke()`를 직접 호출했기 때문에 실제 pointer input path를 검증하지 못했다.
+  Evidence: 사용자 수동 확인에서 버튼 클릭이 동작하지 않았고, runtime UI에는 `Canvas`/`GraphicRaycaster`만 있으며 `EventSystem`이 없었다. 수정 후 `InputSystemUIInputModule`을 통해 mouse state event를 처리하자 `ForageBefore=1`, `ForageAfter=2`가 됐다.
 ## Decision Log
 
 - Decision: active ExecPlan 파일은 `docs/first-playable-execplan.md`에 둔다.
@@ -76,6 +79,8 @@ Issue #4는 완료됐다. `VillageGame` success path test는 Day 1 `Forage=2, Gu
 Issue #5는 완료됐다. Domain tests는 `Forage=3, Guard=0, Repair=0` 반복 시 Day 2에 `Food=9`, `Wall=0`, `Outcome=WallCollapsed`가 되고, `Forage=0, Guard=3, Repair=0` 반복 시 Day 2에 `Food=-3`, `Wall=3`, `Outcome=FoodDepleted`가 됨을 확인한다. 두 failure 모두 terminal 이후 `CanResolve`와 `ResolveDay`가 추가 진행을 막는다.
 
 Play Mode 최종 probe는 UI 버튼만 사용해 success path, wall failure path, restart flow, food failure path를 한 번에 재현했다. Success는 `Day: 3`, `Food: 0`, `Wall: 3/5`, `Outcome: Victory`, log 3줄, `Resolve=False`였다. Wall failure는 `Day: 2`, `Food: 9`, `Wall: 0/5`, `Outcome: WallCollapsed`, log 2줄, `Resolve=False`였다. Restart는 `Day: 1`, `Food: 3`, `Wall: 3/5`, `Villagers: 3`, `Outcome: InProgress`, `Resolve=True`였다. Food failure는 `Day: 2`, `Food: -3`, `Wall: 3/5`, `Outcome: FoodDepleted`, log 2줄, `Resolve=False`였다. 최종 `screenshot-game-view`는 FoodDepleted 화면에서 key text가 보이는 Game View 714x402 이미지를 반환했고, layout probe는 report log가 buttons 아래에 분리되어 있음을 확인했다. Console Error와 Exception은 최종 verification run 기준으로 빈 배열이었다.
+
+Post-close correction: 실제 사용자 클릭이 되지 않았다. 원인은 runtime-generated UI가 `EventSystem`과 UI input module을 만들지 않았고, 기존 probe가 `Button.onClick.Invoke()`를 직접 호출해 입력 경로를 우회했기 때문이다. `SafeVillageGamePresenter`는 이제 `EventSystem`이 없으면 생성하고 `InputSystemUIInputModule.AssignDefaultActions()`를 호출한다. 수정 후 Play Mode에서 Input System mouse state event로 `ForagePlusButton`을 누르는 probe가 `Forage` count를 `1 -> 2`로 바꾸는 것을 확인했다. 이 correction은 `docs/agents/ai-mistakes.md`에도 guardrail로 기록했다.
 
 ## Context and Orientation
 
@@ -433,6 +438,34 @@ Issue #5 검증 결과는 다음과 같다.
     unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Exception","includeStackTrace":false,"lastMinutes":10}'
     result: []
 
+Post-close click correction 산출물은 다음과 같다.
+
+    Assets/SafeVillage/Runtime/SafeVillage.Runtime.asmdef
+    Assets/SafeVillage/Runtime/SafeVillageGamePresenter.cs
+    docs/agents/ai-mistakes.md
+
+Post-close click correction 검증 결과는 다음과 같다.
+
+    unity-mcp-cli run-tool tests-run --input '{"testMode":"EditMode","testAssembly":"SafeVillage.Core.Tests","includePassingTests":true,"includeMessages":true}'
+    Status: Passed
+    TotalTests: 8
+    PassedTests: 8
+
+    unity-mcp-cli run-tool script-execute --input '{...SafeVillageRealPointerProbe...}'
+    EventSystem: EventSystem
+    Module: InputSystemUIInputModule
+    ForageBefore: 1
+    ForageAfter: 2
+
+    unity-mcp-cli run-tool screenshot-game-view --input '{}'
+    Screenshot from Game View (714x402)
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Error","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
+    unity-mcp-cli run-tool console-get-logs --input '{"maxEntries":20,"logTypeFilter":"Exception","includeStackTrace":false,"lastMinutes":10}'
+    result: []
+
 ## Interfaces and Dependencies
 
 `SafeVillage.Core`는 Unity runtime assemblies를 참조하지 않는다. 이 assembly는 deterministic state transition만 제공한다. Public API는 `VillageGame`, `VillageState`, `VillageAssignment`, `DayReport`, `VillageOutcome` 중심으로 유지한다.
@@ -458,3 +491,5 @@ Issue #5 검증 결과는 다음과 같다.
 2026-05-23 / Codex: Issue #4를 실행했다. 3일 성공 경로 test를 추가했고, Play Mode UI 버튼 경로로 Victory, report log 3줄, terminal 이후 Resolve 비활성화, Console Error/Exception 0건을 확인했다.
 
 2026-05-23 / Codex: Issue #5를 실행했다. WallCollapsed/FoodDepleted tests를 추가했고, report log를 buttons 아래로 내려 layout overlap risk를 줄였다. Play Mode UI 버튼 경로로 success, wall failure, restart, food failure를 검증하고 Console Error/Exception 0건과 Game View screenshot evidence를 확인했다.
+
+2026-05-23 / Codex: Issue #5 후 실제 클릭 불가 문제를 수정했다. Runtime UI에 `EventSystem`/`InputSystemUIInputModule` 생성 경로를 추가했고, Input System pointer event가 `ForagePlusButton`을 실제로 눌러 count를 변경하는지 확인했다.

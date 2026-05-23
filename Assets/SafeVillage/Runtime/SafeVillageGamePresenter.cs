@@ -3,6 +3,8 @@ using SafeVillage.Core;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 namespace SafeVillage.Runtime
@@ -51,6 +53,7 @@ namespace SafeVillage.Runtime
             scaler.referenceResolution = new Vector2(1280f, 720f);
             scaler.matchWidthOrHeight = 0.5f;
 
+            EnsureEventSystem();
             CreateBackground(canvasObject.transform);
 
             stateText = CreateText(
@@ -208,6 +211,24 @@ namespace SafeVillage.Runtime
             var image = backgroundObject.GetComponent<Image>();
             image.color = new Color32(25, 32, 33, 255);
             backgroundObject.transform.SetAsFirstSibling();
+        }
+
+        private static void EnsureEventSystem()
+        {
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+            {
+                var eventSystemObject = new GameObject("EventSystem", typeof(EventSystem));
+                eventSystem = eventSystemObject.GetComponent<EventSystem>();
+            }
+
+            if (eventSystem.GetComponent<BaseInputModule>() != null)
+            {
+                return;
+            }
+
+            var inputModule = eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
+            inputModule.AssignDefaultActions();
         }
 
         private void CreateAssignmentRow(
